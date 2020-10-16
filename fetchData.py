@@ -1,5 +1,5 @@
-from WiseairClient import WiseairClient
-from WiseairClient import WiseairUtils
+from lib.WiseairClient import WiseairClient
+from lib.WiseairClient import WiseairUtils
 
 import matplotlib.pyplot as plt
 
