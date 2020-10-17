@@ -3,7 +3,7 @@ from lib.WiseairClient import WiseairUtils
 
 import matplotlib.pyplot as plt
 
-client = WiseairClient(r"/home/alessandro/Desktop/wiseair-client/personalAccessToken.csv")
+client = WiseairClient(r"./lib/personalAccessToken.csv")
 
 currentMeasures = client.getLiveAirQuality()
 #print(currentMeasures)
