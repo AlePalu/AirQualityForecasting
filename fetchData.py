@@ -46,3 +46,32 @@ plt.show()
 utils = WiseairUtils()
 #data = utils.getPandasDataFrameFromDataOfSingleSensor(data)
 #data.to_csv("sampleData.csv")
+
+def getData(self, beginDate, endDate, variables, potIdList):
+    pmData = {}
+    for ID in potIdList:
+        BEGIN_DATE,END_DATE = "2020-10-14","2020-10-16"
+        data = client.getDataOfPotByInterval(ID,BEGIN_DATE,END_DATE)
+        pmData[ID] = {}
+        # inizializza il dizionario in modo che risulti così
+        # {ID: {"pm2p5": [], "pm10": [], "umidità": [], "temperatura": []}}
+        for cell in data:
+            # prendi dalla singola cell l'informazione che serve
+            for v in variables:
+                # appendi a pmData[ID] il contenuto di cell per la variabile v
+
+                # devi fare qualcosa come questo, però per la variabile v
+                pmData[ID].append(cell["pm2p5"])
+
+    return pmData
+
+
+
+
+for v in features:
+    valori = []
+    mappainterna[v] = []
+    for cell in data:
+        valori.append(cell[v])
+    mappainterna[v] = valori
+    datiPot[ID] = mappainterna
