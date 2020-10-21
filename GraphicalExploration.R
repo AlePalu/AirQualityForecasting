@@ -67,11 +67,22 @@ ggplot(wiseairdata[pot_id == 1103 & created_at>="2020-09-24" & created_at<"2020-
   scale_x_datetime(date_breaks = "1 hours") +
   theme(axis.text.x = element_text(angle = 90)) 
 
+
+#plot of pm10 of some plots in 3 days, removing outliers (>30)
+ggplot(wiseairdata[(pot_id %in% c(1103,1109,1116,1094,1095)) & created_at>"2020-10-05" & created_at<="2020-10-08" & pm10< 30 ,],aes(x=created_at,y=pm10,color=pot_id)) +
+  geom_line() +
+  scale_x_datetime(date_breaks = "2 hours") +
+  theme(axis.text.x = element_text(angle = 90)) 
+
+
 #plotting pm2p5 a day of september (24) of some pots
 ggplot(wiseairdata[(pot_id %in% c(1103,1109,1116,1094,1095)) & created_at>="2020-09-24" & created_at<"2020-09-25" & pm2p5<50],aes(x=created_at,y=pm2p5,color=pot_id)) +
   geom_line() +
   scale_x_datetime(date_breaks = "1 hours") +
   theme(axis.text.x = element_text(angle = 90)) 
+
+
+
 
 
 ggplot(wiseairdata[(pot_id==1103 | pot_id==1109) & created_at>"2020-09-01",],aes(x=created_at,y=pm2p5,color=pot_id)) +
@@ -85,10 +96,7 @@ ggplot(wiseairdata[(pot_id %in% c(1103,1109,1116,1094,1095)) & created_at>"2020-
   scale_x_datetime(date_breaks = "6 hours") +
   theme(axis.text.x = element_text(angle = 90)) 
 
-ggplot(wiseairdata[(pot_id %in% c(1103,1109,1116,1094,1095)) & created_at>"2020-10-05" & created_at<="2020-10-08",],aes(x=created_at,y=pm10,color=pot_id)) +
-  geom_point() +
-  scale_x_datetime(date_breaks = "2 hours") +
-  theme(axis.text.x = element_text(angle = 90)) 
+
 
 
 
