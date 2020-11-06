@@ -37,6 +37,21 @@ class DataCollector:
             potIdList.append(item["pot_id"])
         return potIdList
 
+    def getPotPosition(self, potIDList):
+        # get data from wiseair server
+        serverInfo = self.client.getLiveAirQuality()
+
+        positions = {}
+        for item in serverInfo["data"]:
+            if(item["pot_id"] not in positions.keys() and item["pot_id"] in potIDList):
+                positions[item["pot_id"]] = dict([("lat",item["latitude"]), ("lon",item["longitude"])])
+
+        # store results in dataframe
+        posDF = pd.DataFrame.from_dict(positions, orient='index').reset_index()
+        posDF.columns = ['pot_id','lat','lon']
+                
+        return posDF
+    
     # store wiseair data for the specified period in a CSV file
     def getData(self, beginData, endData, outputFile):
         # get sensor ID
@@ -71,6 +86,12 @@ class DataCollector:
 
         potID = [i for i in potID if i not in nullPotID]
         print("got not null data from "+str(len(potID))+" sensors"+" "*100)
+
+        # join information with latitude and longitude of each sensor
+        posDF = self.getPotPosition(potID)
+
+        # merge the two datasets
+        wiseairData = pd.merge(wiseairData, posDF, on = "pot_id", how="outer")
 
         # save dataset in CSV
         wiseairData.to_csv(outputFile)
@@ -137,6 +158,9 @@ class DataCollector:
 
 # d = DataCollector()
 
+# BEGIN_DATE = "2020-07-01"
+# END_DATE   = "2020-08-01"
+# d.getData(BEGIN_DATE, END_DATE, "../data/rawdata.csv")
 # lat = "45.464664"
 # lon = "9.188540"
 
