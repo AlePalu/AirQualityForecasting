@@ -1,0 +1,14 @@
+- presentazione Wiseair e del fenomeno analizzato
+
+- modalità di misurazione dei dati (arianne + ARPA)
+
+- struttura del dataset
+	- caratteristiche dei dati: serie storiche geolocalizzate non regolari nel tempo
+
+- piano di lavoro: 1) analisi univariata (trascurando dati geografici)
+		   2) analisi multivariata/funzionale
+
+- analisi univariata
+	1) processing dei dati: media oraria 
+	2) fit di un modello autoregressivo (o ARMA)
+	
