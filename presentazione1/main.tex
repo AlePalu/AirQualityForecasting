@@ -1,0 +1,39 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{AQF project presentation 1}
+\date{November 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Wiseair and data measurement}
+
+\subsection{Wiseair}
+
+The measure of air quality in Lombardy is carried out by ARPA using accurate sensing stations. These stations, however, are expensive and bulky, so only a few of them are deployed on the territory. Only two of these stations are present in Milan. 
+
+The concentration of particulate matter (PM), however, varies at an hyperlocal scale, so 2 stations are not enough to capture the phenomenon. 
+
+Wiseair is a startup company that has designed a low-cost sensor, meant to be user-friendly and easy to install: Arianna. More than 100 citizens preordered one, and 50 of these sensors have been distributed in July 2020, thanks to the involvement of citizens.
+
+\subsection{Objective}
+
+Wiseair's goal is to provide citizens with useful information about air quality. To achieve this, the information coming from the Ariannas needs to be interpolated on areas where sensors are not present. Also, an air quality forecast would be useful, for example for planning outdoor activities. 
+
+\subsection{Data measurement}
+
+An Arianna sensor measures the concentration of PM once per hour or more frequently. The sensor also measures humidity and temperature with each PM measurement. It has been observed that the measurement accuracy is negatively affected by adverse weather conditions, so raw data can be filtered and processed so that outliers can be detected and removed, also using humidity and temperature information.
+
+\section{Database structure}
+
+Each observation in the dataset is a measurement from and Arianna station. 
+The variable "PotID" identifies which sensor has taken the measurement. The ID is useful to geolocalize the measurement.
+The variable "created\_at" gives the time coordinate for the measurement, up to the second. The format is "yyyy-mm-dd hh:MM:ss".
+There are 6 variables related to air quality measurement, one for each of the following particulate matter types: PM\textsubscript{1}, PM\textsubscript{2.5}, PM\textsubscript{4}, PM\textsubscript{10}. These types refer to the thickness of the measured particulate (for example, the variable PM{2.5} refers to particles of less than 2.5 micrometers
+
+
+
+
+\end{document}
