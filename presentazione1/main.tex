@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
+\usepackage{siunitx}
+
 \title{AQF project presentation 1}
 \date{November 2020}
 
@@ -30,8 +32,16 @@ An Arianna sensor measures the concentration of PM once per hour or more frequen
 
 Each observation in the dataset is a measurement from and Arianna station. 
 The variable "PotID" identifies which sensor has taken the measurement. The ID is useful to geolocalize the measurement.
+
 The variable "created\_at" gives the time coordinate for the measurement, up to the second. The format is "yyyy-mm-dd hh:MM:ss".
-There are 6 variables related to air quality measurement, one for each of the following particulate matter types: PM\textsubscript{1}, PM\textsubscript{2.5}, PM\textsubscript{4}, PM\textsubscript{10}. These types refer to the thickness of the measured particulate (for example, the variable PM{2.5} refers to particles of less than 2.5 micrometers
+
+There are 4 variables related to air quality measurement, one for each of the following particulate matter types: PM\textsubscript{1}, PM\textsubscript{2.5}, PM\textsubscript{4}, PM\textsubscript{10}. These types refer to the thickness of the measured particulate (for example, the variable PM{2.5} refers to particles of less than 2.5 \si{\micro\meter}.
+
+The PM concentrations are measured in \si{\micro\gram\per\cubic\meter}
+
+
+
+
 
 
 
