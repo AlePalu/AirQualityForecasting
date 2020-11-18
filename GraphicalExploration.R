@@ -3,6 +3,9 @@ library(forcats)
 library(data.table)
 library(chron)
 library(fasttime)
+library(svglite)
+library(raster)
+library(ggmap)
 
 #---------- Preparing the datasets for graphic exploration --------
 # we should consider having all numerical values under a single column "value" 
@@ -11,7 +14,7 @@ library(fasttime)
 # since it would maybe be easier to plot with ggplot?
 
 # reading the database (fast) dropping a duplicated column (!?)
-wiseairdata=fread("wiseairdata.csv", drop = 16)
+wiseairdata=fread("data/rawdata.csv", drop = 16)
 
 # converting dates and time to POSIXct class (very fast)
 

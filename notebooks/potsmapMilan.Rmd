@@ -1,0 +1,116 @@
+---
+title: "Map of Ariannas in Milan"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+loading libraries data from tsData.csv
+
+
+```{r}
+library(ggplot2)
+library(forcats)
+library(data.table)
+library(chron)
+library(fasttime)
+library(svglite)
+library(raster)
+library(ggmap)
+library(extraoperators)
+
+#setting parent directory as working directory
+
+currentDir=getwd()
+
+parentDir=dirname(currentDir)
+
+setwd(parentDir)
+
+tsData=fread("data/tsData.csv")
+
+head(tsData)
+
+
+```
+
+aggregating all data to leave just potID and longitude, latitude
+
+```{r}
+locationData=tsData[,j=.(longitude=min(longitude),latitude=min(latitude)),by=.(pot_id)]
+
+head(locationData)
+```
+
+
+Fixing geographical limits of the map displayed and selecting the pots which are 
+located in Milan. 
+
+image file with the map is saved in potsMap.jpg
+```{r}
+topL=45.539
+bottomL=45.405
+leftL=9.08
+rightL=9.31
+
+# get the Map of Milan
+MilanMap=get_stamenmap(bbox = c(left=leftL,right=rightL,top=topL,bottom=bottomL),maptype = 'terrain',zoom=12)
+
+# selecting only pots on Milan area
+MilanPots=locationData[(longitude %gele% c(leftL,rightL) & latitude %gele% c(bottomL,topL)),]
+
+print.default(paste("number of pots displayed: ",dim(MilanPots)[1]))
+
+# plotting and displaying 
+potsMap=ggmap(MilanMap) + 
+  geom_point(data=MilanPots,aes(x=longitude,y=latitude),alpha=.7,size=2,colour="red")+
+  labs(title='Milan',y='Latitude (WGS84)',x='Longitude (WGS84)')
+
+potsMap
+
+ggsave(filename="potsMap.jpg",plot=potsMap,width=7, height = 6)
+
+```
+
+producing some plots to show time irregularity.
+
+
+
+```{r}
+
+#loading raw data
+
+wiseairdata=fread("data/rawdata.csv", drop = 16)
+
+# converting dates and time to POSIXct class (very fast)
+
+wiseairdata$created_at = fastPOSIXct(wiseairdata$created_at)
+
+# converting pot_id variable into a factor  (fast)
+wiseairdata$pot_id = as.factor(wiseairdata$pot_id)
+
+
+# aggregating (fast) data to create a pot database (computing the number of measure, first date of measure, mean frequency of measure,)
+potdatabase=wiseairdata[,list(max_cfm=max(consecutive_failed_measures),
+                              nr_measures=.N, 
+                              firstdate=min(created_at), 
+                              meanfreq=mean(seconds_until_next_measure), 
+                              maxfreq=max(seconds_until_next_measure),
+                              minfreq=min(seconds_until_next_measure)  ),by=list(pot_id)]
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+

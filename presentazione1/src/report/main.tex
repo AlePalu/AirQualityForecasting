@@ -16,6 +16,8 @@
 \usepackage{blindtext}
 \usepackage{wrapfig}
 
+\usepackage{siunitx}
+
 \begin{document}
 	
 \pagenumbering{gobble}
@@ -49,7 +51,7 @@
 		
 		
 		Group members:\\
-		Datena Maria Alfredo \\
+		Datena Amedeo \\
 		Dell'Atti Martina \\
 		Palummo Alessandro
 		
@@ -68,26 +70,53 @@
 
 \subsection{Wiseair}
 
-The measure of air quality in Lombardy is carried out by ARPA using accurate sensing stations. These stations, however, are expensive and bulky, so only a few of them are deployed on the territory. Only two of these stations are present in Milan. 
+The measure of air quality in Lombardy is carried out by ARPA using accurate sensing stations. These stations, however,
+ are expensive and bulky, so only a few of them are deployed on the territory. Only two of these stations are present in Milan. 
 
-The concentration of particulate matter (PM), however, varies at an hyperlocal scale, so 2 stations are not enough to capture the phenomenon. 
+However, two stations are not enough to capture the phenomenon in way that is useful for a single citizen living in a specific area of the city,
+ Since the concentration of particulate matter (PM) varies at an hyperlocal scale. 
 
-Wiseair is a startup company that has designed a low-cost sensor, meant to be user-friendly and easy to install: Arianna. More than 100 citizens preordered one, and 50 of these sensors have been distributed in July 2020, thanks to the involvement of citizens.
+Wiseair is a startup company that has designed a low-cost sensor, meant to be user-friendly and easy to install: Arianna.
+ More than 100 citizens preordered one, and 50 of these sensors have been distributed as of July 2020, thanks to the involvement of citizens.
+
+ Below is a map of Milan with the locations of installed and functioning Ariannas.
+
+ \begin{figure}[h!]
+  \centering
+  \includegraphics[width=5in]{potsMap.jpg}
+  \caption{locations of installed Ariannas in the city of Milan}
+\end{figure}
 
 \subsection{Objective}
 
-Wiseair's goal is to provide citizens with useful information about air quality. To achieve this, the information coming from the Ariannas needs to be interpolated on areas where sensors are not present. Also, an air quality forecast would be useful, for example for planning outdoor activities. 
+Wiseair's goal is to provide citizens with useful information about air quality. To achieve this, the information coming from
+ the Ariannas needs to be interpolated on areas where sensors are not present. Also, an air quality forecast would be useful,
+  for example for planning outdoor activities. 
 
 \subsection{Data measurement}
 
-An Arianna sensor measures the concentration of PM once per hour or more frequently. The sensor also measures humidity and temperature with each PM measurement. It has been observed that the measurement accuracy is negatively affected by adverse weather conditions, so raw data can be filtered and processed so that outliers can be detected and removed, also using humidity and temperature information.
+An Arianna sensor measures the concentration of PM once per hour or more frequently. The sensor also measures humidity and 
+temperature with each PM measurement. It has been observed that the measurement accuracy is negatively affected by adverse weather
+ conditions, so raw data can be filtered and processed so that outliers can be detected and removed, also using humidity and temperature information.
 
 \section{Database structure}
 
 Each observation in the dataset is a measurement from and Arianna station. 
 The variable "PotID" identifies which sensor has taken the measurement. The ID is useful to geolocalize the measurement.
 The variable "created\_at" gives the time coordinate for the measurement, up to the second. The format is "yyyy-mm-dd hh:MM:ss".
-There are 6 variables related to air quality measurement, one for each of the following particulate matter types: PM_{1},PM_{2.5},PM_{10}. These types refer to the thickness of the measured particulate (for example, the variable PM{2.5} refers to particles of less than 2.5 micrometers
+There are 6 variables related to air quality measurement, one for each of the following particulate matter types: PM\textsubscript{1},PM\textsubscript{2.5},PM\textsubscript{10}.
+ These types refer to the thickness of the measured particulate (for example, the variable PM\textsubscript{2.5} refers to particles of less than 2.5 \si{\micro\meter}. The
+ PM concentrations are measured in \si{\micro\gram\per\cubic\meter}.
+The variables "temperature" and "humidity" record the temperature and humidity measurements made by the Arianna station.
+
+\subsection{Time irregularity}
+
+The measurement frequency of the Arianna station can be set by the user and the stations do not transmit their measurement if an internet connection is not
+available. This means (1) that the measurement frequency varies among stations and (2) most stations do not perform measurement at a regular time frequency:
+for example, many stations stop transmitting data at night. This introduces time irregularity in the time series. 
+
+Time irregularity can be solved in multiple methods. The data could be smoothed using spline curves, producing continuous functions that can be sampled at 
+regular time intervals. 
 
 
 ------
@@ -109,9 +138,9 @@ available data hourly before integrating further information from ARPA sensors.
     \includegraphics[scale=0.3]{plotDati.png}
     \caption{time series of pm2p5 in 48 hours for some pot-id}
 \end{figure}
-Wiseair own more than 60 air quality sensor in Milan at the moment and they are increasing day by day thanks to the involvement of citizens who install them. 
+Wiseair own more than 60 air quality sensor in Milan at the moment and they are increasing day by day thanks to the involvement of citizens who install them.\\ 
 
-\\In our dataset they are identified by the variable potid. 
+In our dataset they are identified by the variable potid. 
 We consider only one potid to make some initial exploration, in particular we consider the \textbf{potid 1091} because it is the pot with less missing values.
 
  \begin{figure}[h!]
@@ -188,27 +217,35 @@ As a first proposal, we assume a conjugate model to explain the AR(2) structure 
 where $\epsilon_{t}$ is a sequence of uncorrelated error terms and the $\phi_i$ are constant parameters.
 
 \vspace{3mm}
+
 \begin{tabularx}{0.8\textwidth}{XX}
-    {
+    { 
         \text{LIKELIHOOD}\newline\newline
+        \[
         \begin{aligned} 
         y|\underline{\phi},\beta & \sim N(\underline{\phi}^{T}\beta,\sigma^{2})\\
         & \text{$\sigma^{2}$ not known}
         \end{aligned}
+        \]
     }&{
         \text{PRIORS}\newline\newline
+        \[
         \begin{aligned}
 	    \underline{\phi }|\sigma^2 &\sim \mathcal{N}_2(\underline\mu_0, \sigma^2B_0) \\
         \sigma^2 &\sim inv\Gamma \Bigl(\frac{\nu_0}{2}, \frac{\nu_0 \sigma_0^2}{2} \Bigr) \qquad
         \text{with $\mu_0, B_0, \nu_0, \sigma_0^2$ fixed}
         \end{aligned}
+        \]
+	
     }
 \end{tabularx}
+
 \vspace{3mm}
 
 $B_0$ is a $2 \times 2$ matrix, $\mu_0$ is any vector in $\mathcal{R}^2$. Because the model is a standard conjugate linear model, posteriors are:
 
 \text{POSTERIORS}\newline\newline
+\[
 \begin{aligned}
 \underline{\phi} | Y &\sim \mathcal{N}_2 (\mu_n, \sigma^2 B_n)
 \qquad \qquad
@@ -223,7 +260,7 @@ $B_0$ is a $2 \times 2$ matrix, $\mu_0$ is any vector in $\mathcal{R}^2$. Becaus
     & \sigma_n^2 = \frac{1}{v_n} \Bigl[ v_0\sigma_0^2 + (Y - \Phi^T\mu_0)^T [\Phi^T B_0 \Phi + I_n]^{-1} (Y - \Phi^T\mu_0) \Bigr]
     \end{aligned}\\
 \end{aligned}
-
+\]
 \vspace{10mm}
 
 Unfortunately can happen that sensor does not send any data. From our perspective this translates in the presence of missing values in the time series. For this univariate analysis pot 1091 has only the 0.012\% of value missing, hence in this case is not a particular problem. Morover missing data are distributed over the all considered period (we have missing values in correspondence of just few hours) and do not span a large interval of time.

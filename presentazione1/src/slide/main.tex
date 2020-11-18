@@ -61,7 +61,7 @@
 \addtobeamertemplate{footline}{\hypersetup{allcolors=.}}{}
 \begin{document}
 
-\author[]{Datena Maria Alfredo, Dell'Atti Martina, Palummo Alessandro}
+\author[]{Datena Amedeo, Dell'Atti Martina, Palummo Alessandro}
 \date{November 20, 2020}
 
 \begin{frame}\maketitle
@@ -139,17 +139,21 @@ where $\epsilon_{t}$ is a sequence of uncorrelated error terms and the $\phi_i$ 
 \begin{columns}
 \column{0.3\textwidth}
         \text{LIKELIHOOD}\newline\newline
+        \[
         \begin{aligned} 
         y|\underline{\phi},\beta & \sim \mathcal{N}(\underline{\phi}^{T}\beta,\sigma^{2})\\
         & \text{$\sigma^{2}$ not known}
         \end{aligned}
+        \]
 \column{0.4\textwidth}
         \text{PRIORS}\newline\newline
+        \[
         \begin{aligned}
 	    \underline{\phi }|\sigma^2 &\sim \mathcal{N}_2(\underline\mu_0, \sigma^2B_0) \\
         \sigma^2 &\sim inv\Gamma \Bigl(\frac{\nu_0}{2}, \frac{\nu_0 \sigma_0^2}{2} \Bigr) \qquad \\
         &\text{ $\mu_0, B_0, \nu_0, \sigma_0^2$ fixed}
         \end{aligned} 
+        \]
 \end{columns}
 \end{frame}
 
@@ -184,14 +188,14 @@ the  POSTERIORS are:
        
 \begin{center}
 \begin{itemize}
-\item   $\sigma^2 | Y &\sim inv\Gamma \Biggl(\frac{v_n}{2}, \frac{v_n \sigma_n^2}{2} \Biggr)$ 
+\item   $\sigma^2 | Y \sim inv\Gamma \Biggl(\frac{v_n}{2}, \frac{v_n \sigma_n^2}{2} \Biggr)$ 
 \end{itemize}
 \end{center}
 \begin{align*}
-    v_n &= v_0 + n \\
-    \sigma_n^2 &= \frac{1}{v_n} \Bigl[ v_0\sigma_0^2 + (Y - \Phi^T\mu_0)^T [\Phi^T B_0 \Phi + I_n]^{-1} (Y - \Phi^T\mu_0) \Bigr]
+    v_n & = v_0 + n \\
+    \sigma_n^2 & = \frac{1}{v_n} \Bigl[ v_0\sigma_0^2 + (Y - \Phi^T\mu_0)^T [\Phi^T B_0 \Phi + I_n]^{-1} (Y - \Phi^T\mu_0) \Bigr]
 \end{align*}
-            
+   
 \end{frame}
 
 \begin{frame}{Future model development}
