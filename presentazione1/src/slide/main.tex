@@ -76,15 +76,24 @@
 \setbeamertemplate{itemize subitem}[circle]
 
 
+
+
 \begin{frame}{Wiseair}
 
      Wiseair is a startup born in 2018 from some students of Politecnico di Milano, who focused on the problem of \textbf{air quality}.
-     \\They designed low-cost sensor called \textbf{Arianna}, which
-measure the concentration of Particulate Matter once per hour
+     \\They designed low-cost sensor called \textbf{Arianna}
     \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.6\linewidth]{wiseairArrapato.jpg}
 \end{figure}
+\end{frame}
+
+\begin{frame}{Wiseair}
+
+    ARPA has installed four Ar quality measurement stations in Milan. \newline
+    There are \>50 Arianna stations.
+    {\par\centering\includegraphics<1>[width=8cm]{arpaMap.jpg}\par}
+    {\par\centering\includegraphics<2>[width=8cm]{potsMap.jpg}\par}
 \end{frame}
 
 \begin{frame}{Dataset}
@@ -98,7 +107,7 @@ measure the concentration of Particulate Matter once per hour
 
 \begin{frame}{Dataset}
 \begin{itemize}
-    \item < 1->  \textbf{pot-id} identifies which sensor has taken the measurement. The ID is useful to geolocate the measurement
+    \item < 1 -> \textbf{pot-id} identifies which sensor has taken the measurement. The ID is useful to geolocate the measurement
     \item < 2 -> \textbf{created-at} gives the time coordinate for the measurement, up to the second. The format is "yyyy-mm-dd hh:MM:ss"
     \item < 3 -> \textbf{pm1SPS}, \textbf{pm2p5SPS}, \textbf{pm10SPS} are the Particular Matter, pollutant of the air, which have dimensions, respectively, less or equal than $1 \mu m$, $2.5 \mu m$, $ 10 \mu m$. 
     They are measured in $\mu g/m^{3}$

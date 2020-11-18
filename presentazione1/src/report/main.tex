@@ -71,10 +71,10 @@
 \subsection{Wiseair}
 
 The measure of air quality in Lombardy is carried out by ARPA using accurate sensing stations. These stations, however,
- are expensive and bulky, so only a few of them are deployed on the territory. Only two of these stations are present in Milan. 
+ are expensive and bulky, so only a few of them are deployed on the territory. Only four of these stations are present in Milan. 
 
 
-However, the stations only measure the air quality of their immidiate surroundings, and air quality  can be different in each neighborhood
+However, the stations only measure the air quality of their immediate surroundings, and air quality  can be different in each neighborhood
  of the city. Air quality is assessed by measuring the Particulate Matter (PM) concentration, and PM concentrations can vary at a hyperlocal scale.
 
 Wiseair is a startup company that has designed a low-cost sensor, meant to be user-friendly and easy to install: Arianna.
@@ -91,8 +91,17 @@ Wiseair is a startup company that has designed a low-cost sensor, meant to be us
 \subsection{Objective}
 
 Wiseair's goal is to provide more detailed information about air quality in populated areas, so that citizens can plan outdoor activities and travel routes 
-accourdingly. The first step for achieving this is a capillar measurement network in the city. The second step is the processing of data coming from the sensor
-to produce information which is easily accessible for the users. 
+accordingly. The first step for achieving this is a capillar measurement network in the city. The second step is the processing of data coming from the sensor
+to produce information which is easily accessible for the users. Users should be able to obtain:
+
+\begin{itemize}
+ \item estimates of current air quality also in geographical locations where sensors are not presents 
+ \item one or two days forecast of air quality 
+
+\end{itemize}
+
+This report is focused on air quality forecast.
+
 
 
 \subsection{Data measurement}
@@ -161,7 +170,8 @@ available data hourly before integrating further information from ARPA sensors.
     \includegraphics[scale=0.3]{plotDati.png}
     \caption{time series of pm2p5 in 48 hours for some pot-id}
 \end{figure}
-Wiseair own more than 60 air quality sensor in Milan at the moment and they are increasing day by day thanks to the involvement of citizens who install them.\\ 
+
+Wiseair own more than 60 air quality sensor in Milan at the moment and they are increasing day by day thanks to the involvement of citizens who install them. 
 
 In our dataset they are identified by the variable potid. 
 We consider only one potid to make some initial exploration, in particular we consider the \textbf{potid 1091} because it is the pot with less missing values.

@@ -44,6 +44,19 @@ locationData=tsData[,j=.(longitude=min(longitude),latitude=min(latitude)),by=.(p
 
 head(locationData)
 ```
+Now we create the dataset with the coordinates of the four ARPA stations in Milan
+
+(source: https://www.arpalombardia.it/Pages/Aria/Qualita-aria.aspx?mappa=sf)
+
+```{r}
+coordArpa=data.table(lat=c(45.463372,45.470642,45.478561,45.496316),
+                     lon=c(9.195340,9.197197,9.232380,9.190943))
+
+
+
+
+```
+
 
 
 Fixing geographical limits of the map displayed and selecting the pots which are 
@@ -64,10 +77,22 @@ MilanPots=locationData[(longitude %gele% c(leftL,rightL) & latitude %gele% c(bot
 
 print.default(paste("number of pots displayed: ",dim(MilanPots)[1]))
 
-# plotting and displaying 
+# plotting just ARPA Stations
+arpaMap=ggmap(MilanMap) + 
+  geom_point(data=coordArpa,aes(x=lon,y=lat,colour="ARPA"),alpha=.7,size=2) +
+  labs(title='Milan',y='Latitude (WGS84)',x='Longitude (WGS84)',color='Legend') +
+  scale_color_manual(values = c("ARPA"="blue","Wiseair"="red"))
+
+arpaMap
+
+ggsave(filename="arpaMap.jpg",plot=arpaMap,width=7, height=6)
+
+# plotting ARPA + Wiseair
 potsMap=ggmap(MilanMap) + 
-  geom_point(data=MilanPots,aes(x=longitude,y=latitude),alpha=.7,size=2,colour="red")+
-  labs(title='Milan',y='Latitude (WGS84)',x='Longitude (WGS84)')
+  geom_point(data=MilanPots,aes(x=longitude,y=latitude,colour="Wiseair"),alpha=.7,size=2)+
+  geom_point(data=coordArpa,aes(x=lon,y=lat,colour="ARPA"),alpha=.7,size=2)+
+  labs(title='Milan',y='Latitude (WGS84)',x='Longitude (WGS84)', color="Legend") + 
+  scale_color_manual(values = c("ARPA"="blue","Wiseair"="red"))
 
 potsMap
 
@@ -110,9 +135,21 @@ potdatabase=wiseairdata[,list(max_cfm=max(consecutive_failed_measures),
                               maxfreq=max(seconds_until_next_measure),
                               minfreq=min(seconds_until_next_measure)  ),by=list(pot_id)]
 
-ggplot(potdatabase,aes(x=pot_id,y=firstdate)) + geom_point() + scale_y_datetime(date_breaks = "2 days") + coord_flip() + theme(axis.text.x = element_text(angle = 90))
+ggplot(potdatabase,aes(x=pot_id,y=firstdate)) +
+  geom_point() +
+   coord_flip() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(x='station id',y='time of first measure')
 
 
+```
+Now we plot some time series to show an example of time irregularity
+
+```{r}
+ggplot(wiseairdata[(pot_id==1103 | pot_id==1014) & created_at %gele% c("2020-09-23","2020-09-25"),],aes(x=created_at,y=pm10,color=pot_id)) +
+  geom_point(size=1) + geom_line() +labs(x="time of measurement",y="PM10")
+
+ggsave(filename="timeIrregularity.png",width=9,height=5)
 ```
 
 

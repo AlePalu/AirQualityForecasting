@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.17)  18 NOV 2020 11:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.17)  18 NOV 2020 16:06
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**main.tex
-(./main.tex
+**"d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/main.tex"
+(d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/main.tex
 LaTeX2e <2020-10-01> patch level 2
-L3 programming layer <2020-10-27> xparse <2020-03-03>
-(c:/texlive/2020/texmf-dist/tex/latex/base/article.cls
+L3 programming layer <2020-10-27> xparse <2020-03-03> (c:/texlive/2020/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
 (c:/texlive/2020/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
@@ -22,30 +22,25 @@ File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
-)
-(c:/texlive/2020/texmf-dist/tex/latex/base/inputenc.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2020/08/01 v1.3d Input encoding file
 \inpenc@prehook=\toks15
 \inpenc@posthook=\toks16
-)
-(c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsmath.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2020/09/23 v2.17i AMS math features
 \@mathmargin=\skip49
 
 For additional information on amsmath, use the `?' option.
 (c:/texlive/2020/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2000/06/29 v2.01 AMS text
-
-(c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsgen.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks17
 \ex@=\dimen139
-))
-(c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsbsy.sty
+)) (c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen140
-)
-(c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsopn.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2016/03/08 v2.02 operator names
 )
 \inf@bad=\count183
@@ -85,57 +80,45 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 \mathdisplay@stack=\toks21
 LaTeX Info: Redefining \[ on input line 2923.
 LaTeX Info: Redefining \] on input line 2924.
-)
-(c:/texlive/2020/texmf-dist/tex/latex/amsfonts/amssymb.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
-
-(c:/texlive/2020/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-))
-(c:/texlive/2020/texmf-dist/tex/latex/graphics/graphicx.sty
+)) (c:/texlive/2020/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
-
-(c:/texlive/2020/texmf-dist/tex/latex/graphics/keyval.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks22
-)
-(c:/texlive/2020/texmf-dist/tex/latex/graphics/graphics.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2020/08/30 v1.4c Standard LaTeX Graphics (DPC,SPQR)
-
-(c:/texlive/2020/texmf-dist/tex/latex/graphics/trig.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
-)
-(c:/texlive/2020/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+) (c:/texlive/2020/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 105.
-
-(c:/texlive/2020/texmf-dist/tex/latex/graphics-def/pdftex.def
+ (c:/texlive/2020/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen148
 \Gin@req@width=\dimen149
-)
-(c:/texlive/2020/texmf-dist/tex/generic/babel/babel.sty
+) (c:/texlive/2020/texmf-dist/tex/generic/babel/babel.sty
 Package: babel 2020/10/27 3.51 The Babel package
-
-(c:/texlive/2020/texmf-dist/tex/generic/babel/babel.def
+ (c:/texlive/2020/texmf-dist/tex/generic/babel/babel.def
 File: babel.def 2020/10/27 3.51 Babel common definitions
 \babel@savecnt=\count195
 \U@D=\dimen150
 \l@babelnohyphens=\language6
-
-(c:/texlive/2020/texmf-dist/tex/generic/babel/txtbabel.def)
+ (c:/texlive/2020/texmf-dist/tex/generic/babel/txtbabel.def)
 \bbl@readstream=\read2
 )
 \bbl@dirlevel=\count196
-
-(c:/texlive/2020/texmf-dist/tex/generic/babel-english/english.ldf
+ (c:/texlive/2020/texmf-dist/tex/generic/babel-english/english.ldf
 Language: english 2017/06/06 v3.3r English support from the babel system
 Package babel Info: \l@canadian = using hyphenrules for english
 (babel)             (\language0) on input line 102.
@@ -143,8 +126,7 @@ Package babel Info: \l@australian = using hyphenrules for ukenglish
 (babel)             (\language3) on input line 105.
 Package babel Info: \l@newzealand = using hyphenrules for ukenglish
 (babel)             (\language3) on input line 108.
-))
-(c:/texlive/2020/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
+)) (c:/texlive/2020/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
 Package: fancyvrb 2020/05/03 v3.6 verbatim text (tvz,hv)
 \FV@CodeLineNo=\count197
 \FV@InFile=\read3
@@ -152,11 +134,9 @@ Package: fancyvrb 2020/05/03 v3.6 verbatim text (tvz,hv)
 \c@FancyVerbLine=\count198
 \FV@StepNumber=\count199
 \FV@OutFile=\write3
-)
-(c:/texlive/2020/texmf-dist/tex/latex/xcolor/xcolor.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
-
-(c:/texlive/2020/texmf-dist/tex/latex/graphics-cfg/color.cfg
+ (c:/texlive/2020/texmf-dist/tex/latex/graphics-cfg/color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package xcolor Info: Driver file: pdftex.def on input line 225.
@@ -169,8 +149,7 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
-)
-(c:/texlive/2020/texmf-dist/tex/latex/listings/listings.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count266
 \lst@gtempboxa=\box50
 \lst@token=\toks23
@@ -183,29 +162,23 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 \lst@newlines=\count270
 \lst@lineno=\count271
 \lst@maxwidth=\dimen154
-
-(c:/texlive/2020/texmf-dist/tex/latex/listings/lstmisc.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
 \c@lstnumber=\count272
 \lst@skipnumbers=\count273
 \lst@framebox=\box51
-)
-(c:/texlive/2020/texmf-dist/tex/latex/listings/listings.cfg
+) (c:/texlive/2020/texmf-dist/tex/latex/listings/listings.cfg
 File: listings.cfg 2020/03/24 1.8d listings configuration
 ))
 Package: listings 2020/03/24 1.8d (Carsten Heinz)
-
-(c:/texlive/2020/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
 Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
 \symrsfs=\mathgroup6
-)
-(c:/texlive/2020/texmf-dist/tex/latex/geometry/geometry.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
-
-(c:/texlive/2020/texmf-dist/tex/generic/iftex/ifvtex.sty
+ (c:/texlive/2020/texmf-dist/tex/generic/iftex/ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
-
-(c:/texlive/2020/texmf-dist/tex/generic/iftex/iftex.sty
+ (c:/texlive/2020/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2020/03/06 v1.0d TeX engine tests
 ))
 \Gm@cnth=\count274
@@ -220,11 +193,9 @@ Package: iftex 2020/03/06 v1.0d TeX engine tests
 \Gm@layouthoffset=\dimen161
 \Gm@layoutvoffset=\dimen162
 \Gm@dimlist=\toks24
-)
-(c:/texlive/2020/texmf-dist/tex/latex/tools/tabularx.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/tools/tabularx.sty
 Package: tabularx 2020/01/15 v2.11c `tabularx' package (DPC)
-
-(c:/texlive/2020/texmf-dist/tex/latex/tools/array.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/tools/array.sty
 Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
 \col@sep=\dimen163
 \ar@mcellbox=\box52
@@ -241,11 +212,9 @@ Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
 \TX@delta=\dimen169
 \TX@cols=\count277
 \TX@ftn=\toks26
-)
-(c:/texlive/2020/texmf-dist/tex/latex/blindtext/blindtext.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/blindtext/blindtext.sty
 Package: blindtext 2012/01/06 V2.0 blindtext-Package
-
-(c:/texlive/2020/texmf-dist/tex/latex/tools/xspace.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/tools/xspace.sty
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
 )
 \c@blindtext=\count278
@@ -266,31 +235,24 @@ Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
 \c@blind@randommax=\count293
 \c@blind@pangramcount=\count294
 \c@blind@pangrammax=\count295
-)
-(c:/texlive/2020/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/wrapfig/wrapfig.sty
 \wrapoverhang=\dimen170
 \WF@size=\dimen171
 \c@WF@wrappedlines=\count296
 \WF@box=\box54
 \WF@everypar=\toks27
 Package: wrapfig 2003/01/31  v 3.6
-)
-(c:/texlive/2020/texmf-dist/tex/latex/siunitx/siunitx.sty
-(c:/texlive/2020/texmf-dist/tex/latex/l3kernel/expl3.sty
+) (c:/texlive/2020/texmf-dist/tex/latex/siunitx/siunitx.sty (c:/texlive/2020/texmf-dist/tex/latex/l3kernel/expl3.sty
 Package: expl3 2020-10-27 L3 programming layer (loader) 
-
-(c:/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+ (c:/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2020-09-24 L3 backend support: PDF output (pdfTeX)
 \l__kernel_color_stack_int=\count297
 \l__pdf_internal_box=\box55
-))
-(c:/texlive/2020/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+)) (c:/texlive/2020/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 Package: xparse 2020-10-27 L3 Experimental document command parser
-
-(c:/texlive/2020/texmf-dist/tex/latex/l3packages/xparse/xparse-generic.tex))
+ (c:/texlive/2020/texmf-dist/tex/latex/l3packages/xparse/xparse-generic.tex))
 Package: siunitx 2020/02/25 v2.8b A comprehensive (SI) units package
-
-(c:/texlive/2020/texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.sty
 Package: l3keys2e 2020-10-27 LaTeX2e option processing using LaTeX3 keys
 )
 \l__siunitx_tmp_box=\box56
@@ -333,10 +295,9 @@ Package: l3keys2e 2020-10-27 LaTeX2e option processing using LaTeX3 keys
 \l__siunitx_table_result_box=\box62
 \l__siunitx_table_number_align_skip=\skip56
 \l__siunitx_table_text_align_skip=\skip57
-
-(c:/texlive/2020/texmf-dist/tex/latex/translator/translator.sty
+ (c:/texlive/2020/texmf-dist/tex/latex/translator/translator.sty
 Package: translator 2020-08-03 v1.12c Easy translation of strings in LaTeX
-)) (./main.aux)
+)) (d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/main.aux)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
@@ -353,8 +314,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
 LaTeX Font Info:    ... okay on input line 21.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
 LaTeX Font Info:    ... okay on input line 21.
-
-(c:/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+ (c:/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count315
 \scratchdimen=\dimen184
@@ -369,12 +329,9 @@ LaTeX Font Info:    ... okay on input line 21.
 \everyMPtoPDFconversion=\toks29
 ) (c:/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-
-(c:/texlive/2020/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (c:/texlive/2020/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 \c@lstlisting=\count321
 
@@ -414,26 +371,19 @@ e
 
 (c:/texlive/2020/texmf-dist/tex/latex/siunitx/siunitx-abbreviations.cfg
 File: siunitx-abbreviations.cfg 2017/11/26 v2.7k siunitx: Abbreviated units
-)
-(c:/texlive/2020/texmf-dist/tex/latex/translator/translator-basic-dictionary-En
-glish.dict
+) (c:/texlive/2020/texmf-dist/tex/latex/translator/translator-basic-dictionary-English.dict
 Dictionary: translator-basic-dictionary, Language: English 
 )
 LaTeX Font Info:    Trying to load font information for U+msa on input line 21.
-
  (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 21.
-
-
-(c:/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
+ (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 21
-.
-
-(c:/texlive/2020/texmf-dist/tex/latex/jknapltx/ursfs.fd
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 21.
+ (c:/texlive/2020/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 <polimi.jpg, id=1, 200.75pt x 200.75pt>
@@ -443,178 +393,153 @@ Package pdftex.def Info: polimi.jpg  used on input line 34.
 (pdftex.def)             Requested size: 99.58464pt x 99.5875pt.
  [1
 
-{c:/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./polimi.jpg>]
+{c:/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/polimi.jpg>]
 <potsMap.jpg, id=10, 505.89pt x 433.62pt>
 File: potsMap.jpg Graphic file (type jpg)
 <use potsMap.jpg>
-Package pdftex.def Info: potsMap.jpg  used on input line 86.
+Package pdftex.def Info: potsMap.jpg  used on input line 87.
 (pdftex.def)             Requested size: 361.34999pt x 309.73158pt.
  [2
 
- <./potsMap.jpg>]
-<timeIrregularity.png, id=14, 650.43pt x 361.35pt>
+ <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/potsMap.jpg>]
+<timeIrregularity.png, id=15, 650.43pt x 361.35pt>
 File: timeIrregularity.png Graphic file (type png)
 <use timeIrregularity.png>
-Package pdftex.def Info: timeIrregularity.png  used on input line 127.
+Package pdftex.def Info: timeIrregularity.png  used on input line 138.
 (pdftex.def)             Requested size: 361.34999pt x 200.75563pt.
-<dataset.png, id=15, 696.35156pt x 258.9675pt>
+ [3 <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/timeIrregularity.png>]
+<dataset.png, id=22, 696.35156pt x 258.9675pt>
 File: dataset.png Graphic file (type png)
 <use dataset.png>
-Package pdftex.def Info: dataset.png  used on input line 148.
+Package pdftex.def Info: dataset.png  used on input line 159.
 (pdftex.def)             Requested size: 361.34999pt x 134.3833pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[3 <./timeIrregularity.png>] [4 <./dataset.png>]
+ [4 <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/dataset.png>]
 <plotDati.png, id=28, 1050.92625pt x 749.80125pt>
 File: plotDati.png Graphic file (type png)
 <use plotDati.png>
-Package pdftex.def Info: plotDati.png  used on input line 159.
+Package pdftex.def Info: plotDati.png  used on input line 170.
 (pdftex.def)             Requested size: 315.2803pt x 224.94211pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 162--163
-
- []
-
 <plotpioggia.png, id=29, 1308.8097pt x 1520.5608pt>
 File: plotpioggia.png Graphic file (type png)
 <use plotpioggia.png>
-Package pdftex.def Info: plotpioggia.png  used on input line 171.
+Package pdftex.def Info: plotpioggia.png  used on input line 183.
 (pdftex.def)             Requested size: 235.57558pt x 273.68913pt.
 
-Overfull \hbox (37.8606pt too wide) in paragraph at lines 171--172
+Overfull \hbox (37.8606pt too wide) in paragraph at lines 183--184
  [][] 
  []
 
 <plotwind.png, id=30, 1308.8097pt x 1520.5608pt>
 File: plotwind.png Graphic file (type png)
 <use plotwind.png>
-Package pdftex.def Info: plotwind.png  used on input line 176.
+Package pdftex.def Info: plotwind.png  used on input line 188.
 (pdftex.def)             Requested size: 235.57558pt x 273.68913pt.
 
-Overfull \hbox (37.8606pt too wide) in paragraph at lines 176--177
+Overfull \hbox (37.8606pt too wide) in paragraph at lines 188--189
  [][] 
  []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 <plottemperature.png, id=31, 1308.8097pt x 1520.5608pt>
 File: plottemperature.png Graphic file (type png)
 <use plottemperature.png>
-Package pdftex.def Info: plottemperature.png  used on input line 185.
+Package pdftex.def Info: plottemperature.png  used on input line 197.
 (pdftex.def)             Requested size: 235.57558pt x 273.68913pt.
 
-Overfull \hbox (37.8606pt too wide) in paragraph at lines 185--186
+Overfull \hbox (37.8606pt too wide) in paragraph at lines 197--198
  [][] 
  []
 
 <humidityplot.png, id=32, 1308.8097pt x 1520.5608pt>
 File: humidityplot.png Graphic file (type png)
 <use humidityplot.png>
-Package pdftex.def Info: humidityplot.png  used on input line 190.
+Package pdftex.def Info: humidityplot.png  used on input line 202.
 (pdftex.def)             Requested size: 235.57558pt x 273.68913pt.
 
-Overfull \hbox (37.8606pt too wide) in paragraph at lines 190--191
+Overfull \hbox (37.8606pt too wide) in paragraph at lines 202--203
  [][] 
  []
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-<correlations.png, id=33, 703.1871pt x 708.9687pt>
+[5 <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/plotDati.png> <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/plotpioggia.png> <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/plotwind.png>]
+<correlations.png, id=40, 703.1871pt x 708.9687pt>
 File: correlations.png Graphic file (type png)
 <use correlations.png>
-Package pdftex.def Info: correlations.png  used on input line 203.
+Package pdftex.def Info: correlations.png  used on input line 215.
 (pdftex.def)             Requested size: 281.26985pt x 283.58246pt.
 
-Overfull \hbox (34.12236pt too wide) in paragraph at lines 203--204
+Overfull \hbox (34.12236pt too wide) in paragraph at lines 215--216
  [][] 
  []
 
-[5 <./plotDati.png> <./correlations.png>] [6 <./plotpioggia.png> <./plotwind.pn
-g> <./plottemperature.png> <./humidityplot.png>]
+[6 <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/plottemperature.png> <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/humidityplot.png> <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/correlations.png>]
 <acf.png, id=47, 768.8725pt x 512.91624pt>
 File: acf.png Graphic file (type png)
 <use acf.png>
-Package pdftex.def Info: acf.png  used on input line 224.
+Package pdftex.def Info: acf.png  used on input line 236.
 (pdftex.def)             Requested size: 230.66353pt x 153.87605pt.
 
-Overfull \hbox (32.94855pt too wide) in paragraph at lines 224--225
+Overfull \hbox (32.94855pt too wide) in paragraph at lines 236--237
  [][] 
  []
 
 <pacf.png, id=48, 745.78625pt x 513.92pt>
 File: pacf.png Graphic file (type png)
 <use pacf.png>
-Package pdftex.def Info: pacf.png  used on input line 229.
+Package pdftex.def Info: pacf.png  used on input line 241.
 (pdftex.def)             Requested size: 223.7376pt x 154.17719pt.
 
-Overfull \hbox (26.02261pt too wide) in paragraph at lines 229--230
+Overfull \hbox (26.02261pt too wide) in paragraph at lines 241--242
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
+Underfull \hbox (badness 10000) in paragraph at lines 274--274
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
+Underfull \hbox (badness 10000) in paragraph at lines 274--274
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
+Underfull \hbox (badness 10000) in paragraph at lines 274--274
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
+Underfull \hbox (badness 10000) in paragraph at lines 274--274
 
  []
 
 
-Overfull \hbox (41.25854pt too wide) detected at line 262
+Overfull \hbox (41.25854pt too wide) detected at line 274
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 268--269
+Underfull \hbox (badness 10000) in paragraph at lines 280--281
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 268--269
+Underfull \hbox (badness 10000) in paragraph at lines 280--281
 
  []
 
-[7 <./acf.png> <./pacf.png>] [8] (./main.aux) ) 
+[7 <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/acf.png> <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/pacf.png>] (d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/main.aux) ) 
 Here is how much of TeX's memory you used:
- 8619 strings out of 481381
- 154431 string characters out of 5919348
- 457473 words of memory out of 5000000
+ 8620 strings out of 481381
+ 155147 string characters out of 5919348
+ 458473 words of memory out of 5000000
  25273 multiletter control sequences out of 15000+600000
  541828 words of font info for 56 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 66i,20n,73p,458b,845s stack positions out of 5000i,500n,10000p,200000b,80000s
-{c:/texlive/2020/texmf-dist/font
-s/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2020/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmbx10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmbx12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pf
-b><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texl
-ive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2020/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2020/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2020/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmsy7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sf
-rm1000.pfb>
-Output written on main.pdf (8 pages, 2396282 bytes).
+ 66i,20n,73p,540b,845s stack positions out of 5000i,500n,10000p,200000b,80000s
+{c:/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on "d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/report/main.pdf" (7 pages, 2396592 bytes).
 PDF statistics:
- 99 PDF objects out of 1000 (max. 8388607)
- 55 compressed objects within 1 object stream
+ 96 PDF objects out of 1000 (max. 8388607)
+ 53 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  61 words of extra memory for PDF output out of 10000 (max. 10000000)
 
