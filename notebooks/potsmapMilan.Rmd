@@ -28,6 +28,8 @@ parentDir=dirname(currentDir)
 
 setwd(parentDir)
 
+#reading data
+
 tsData=fread("data/tsData.csv")
 
 head(tsData)
@@ -79,6 +81,15 @@ producing some plots to show time irregularity.
 
 ```{r}
 
+
+#setting parent directory as working directory
+
+currentDir=getwd()
+
+parentDir=dirname(currentDir)
+
+setwd(parentDir)
+
 #loading raw data
 
 wiseairdata=fread("data/rawdata.csv", drop = 16)
@@ -99,13 +110,7 @@ potdatabase=wiseairdata[,list(max_cfm=max(consecutive_failed_measures),
                               maxfreq=max(seconds_until_next_measure),
                               minfreq=min(seconds_until_next_measure)  ),by=list(pot_id)]
 
-
-
-
-
-
-
-
+ggplot(potdatabase,aes(x=pot_id,y=firstdate)) + geom_point() + scale_y_datetime(date_breaks = "2 days") + coord_flip() + theme(axis.text.x = element_text(angle = 90))
 
 
 ```

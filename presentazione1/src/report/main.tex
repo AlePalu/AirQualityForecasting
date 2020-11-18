@@ -73,15 +73,16 @@
 The measure of air quality in Lombardy is carried out by ARPA using accurate sensing stations. These stations, however,
  are expensive and bulky, so only a few of them are deployed on the territory. Only two of these stations are present in Milan. 
 
-However, two stations are not enough to capture the phenomenon in way that is useful for a single citizen living in a specific area of the city,
- Since the concentration of particulate matter (PM) varies at an hyperlocal scale. 
+
+However, the stations only measure the air quality of their immidiate surroundings, and air quality  can be different in each neighborhood
+ of the city. Air quality is assessed by measuring the Particulate Matter (PM) concentration, and PM concentrations can vary at a hyperlocal scale.
 
 Wiseair is a startup company that has designed a low-cost sensor, meant to be user-friendly and easy to install: Arianna.
  More than 100 citizens preordered one, and 50 of these sensors have been distributed as of July 2020, thanks to the involvement of citizens.
 
  Below is a map of Milan with the locations of installed and functioning Ariannas.
 
- \begin{figure}[h!]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=5in]{potsMap.jpg}
   \caption{locations of installed Ariannas in the city of Milan}
@@ -89,9 +90,10 @@ Wiseair is a startup company that has designed a low-cost sensor, meant to be us
 
 \subsection{Objective}
 
-Wiseair's goal is to provide citizens with useful information about air quality. To achieve this, the information coming from
- the Ariannas needs to be interpolated on areas where sensors are not present. Also, an air quality forecast would be useful,
-  for example for planning outdoor activities. 
+Wiseair's goal is to provide more detailed information about air quality in populated areas, so that citizens can plan outdoor activities and travel routes 
+accourdingly. The first step for achieving this is a capillar measurement network in the city. The second step is the processing of data coming from the sensor
+to produce information which is easily accessible for the users. 
+
 
 \subsection{Data measurement}
 
@@ -102,22 +104,36 @@ temperature with each PM measurement. It has been observed that the measurement 
 \section{Database structure}
 
 Each observation in the dataset is a measurement from and Arianna station. 
-The variable "PotID" identifies which sensor has taken the measurement. The ID is useful to geolocalize the measurement.
-The variable "created\_at" gives the time coordinate for the measurement, up to the second. The format is "yyyy-mm-dd hh:MM:ss".
-There are 6 variables related to air quality measurement, one for each of the following particulate matter types: PM\textsubscript{1},PM\textsubscript{2.5},PM\textsubscript{10}.
- These types refer to the thickness of the measured particulate (for example, the variable PM\textsubscript{2.5} refers to particles of less than 2.5 \si{\micro\meter}. The
- PM concentrations are measured in \si{\micro\gram\per\cubic\meter}.
-The variables "temperature" and "humidity" record the temperature and humidity measurements made by the Arianna station.
+\begin{itemize}
+    \item  The variable "PotID" identifies which sensor has taken the measurement. The ID is useful to geolocalize the measurement.
+    \item The variable "created\_at" gives the time coordinate for the measurement, up to the second. The format is "yyyy-mm-dd hh:MM:ss".
+    \item There are 4 variables related to air quality measurement, one for each of the following particulate matter types:
+    PM\textsubscript{1},PM\textsubscript{2.5},PM\textsubscript{10}. These types refer to the thickness of the measured
+    particulate (for example, the variable PM\textsubscript{2.5} refers to particles of less than 2.5 \si{\micro\meter}. The
+    PM concentrations are measured in \si{\micro\gram\per\cubic\meter}.
+    \item The variables "temperature" and "humidity" record the temperature and humidity measurements made by the Arianna station.
+\end{itemize}
 
 \subsection{Time irregularity}
 
-The measurement frequency of the Arianna station can be set by the user and the stations do not transmit their measurement if an internet connection is not
-available. This means (1) that the measurement frequency varies among stations and (2) most stations do not perform measurement at a regular time frequency:
-for example, many stations stop transmitting data at night. This introduces time irregularity in the time series. 
+The measurement frequency of the Arianna station can be set by the user and the stations do not transmit their measurement if
+an internet connection is not
+available. This means (1) that the measurement frequency varies among stations and (2) most stations do not perform measurement
+at a regular time frequency:
+for example, many stations stop transmitting data at night. This introduces time irregularity in the time series.
+Another issue is that different stations have been installed at different times: the time series for each Arianna starts at
+a different time. Below is a plot where the time irregularity is shown.
 
-Time irregularity can be solved in multiple methods. The data could be smoothed using spline curves, producing continuous functions that can be sampled at 
-regular time intervals. 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=5in]{timeIrregularity.png}
+  \caption{portion of PM\textsubscript{10} measurement from two Arianna stations}
+\end{figure}
 
+Time irregularity is an issue to be solved before performing univariate or multivariate analyses, and each type of analysis might require a different approach to the issue.
+
+Time irregularity can be solved in multiple methods. The data could be smoothed using spline curves, producing continuous
+functions that can be sampled at regular time intervals. 
 
 ------
 Originally we had data with a non regular frequency, i.e. the frequency of measurements of a sensor 
@@ -128,6 +144,13 @@ five measurements for hour. So we have performed an hourly average of the measur
 \item Weather data (rain level, wind speed) from ARPA are available with hourly frequency so we needed to average 
 available data hourly before integrating further information from ARPA sensors. 
 \end{itemize}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=5in]{dataset.png}
+  \caption{Portion of the processed dataset}
+\end{figure}
+
 
 ------
 \newpage
