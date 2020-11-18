@@ -146,8 +146,8 @@ ggplot(potdatabase,aes(x=pot_id,y=firstdate)) +
 Now we plot some time series to show an example of time irregularity
 
 ```{r}
-ggplot(wiseairdata[(pot_id==1103 | pot_id==1014) & created_at %gele% c("2020-09-23","2020-09-25"),],aes(x=created_at,y=pm10,color=pot_id)) +
-  geom_point(size=1) + geom_line() +labs(x="time of measurement",y="PM10")
+ggplot(wiseairdata[(pot_id==1103 | pot_id==1014) & created_at %gele% c("2020-09-23","2020-09-25"),],aes(x=created_at,y=pm2p5,color=pot_id)) +
+  geom_point(size=1) + geom_line() +labs(x="time of measurement",y="PM2.5")
 
 ggsave(filename="timeIrregularity.png",width=9,height=5)
 ```
