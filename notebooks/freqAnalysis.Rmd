@@ -18,8 +18,10 @@ library(raster)
 library(extraoperators)
 library(TTR)
 library(fda)
+library(zoo)
 library(lubridate)
-
+library(forecast)
+library(tseries)
 #setting parent directory as working directory
 
 currentDir=getwd()
@@ -67,22 +69,16 @@ To apply SARIMA type models, the time series could be cut in different stages.
 
 For example, the time series appears stationary in august and september.
 
-plotting the time series in these periods
+plotting the time series in this period, hilighting weekend days
 
 ```{r}
 
 
-pot91agosept=pot91[created_at %gele% c("2020-08-15","2020-09-07")]
+pot91agosept=pot91[created_at %gele% c("2020-08-15","2020-09-07"),]
 
 pot91pm2p5plot2=ggplot(data=pot91agosept) +
   geom_line(aes(x=created_at,y=pm2p5SPS)) + 
-  geom_vline(xintercept=ymd_hms(c("2020-07-31 00:00:00",
-                                  "2020-08-02 00:00:00",
-                                  "2020-07-31 00:00:00",
-                                  "2020-08-02 00:00:00",
-                                  "2020-08-13 00:00:00",
-                                  "2020-08-15 00:00:00",
-                                  "2020-08-21 00:00:00",
+  geom_vline(xintercept=ymd_hms(c("2020-08-21 00:00:00",
                                   "2020-08-23 00:00:00",
                                   "2020-08-28 00:00:00",
                                   "2020-08-30 00:00:00",
@@ -99,8 +95,75 @@ print(paste("observations: ",dim(pot91agosept)[1]))
 
 ```
 
-seasonality seems to appear, both on a daily and on a weekly basis. 
-The number of observations still seems very high, and the mean of the time series seems to increase 
+zooming on this portion,seasonality seems to appear, both on a daily and on a weekly basis.
+
+we apply an hourly mean to obtain a regular time series
+
+```{r}
+
+#loading hourly data
+
+currentDir=getwd()
+
+parentDir=dirname(currentDir)
+
+setwd(parentDir)
+
+hourdata=fread("data/tsData.csv")
+
+hourdata$created_at = fastPOSIXct(hourdata$created_at)
+
+#plotting hourly data
+
+pot91hour=hourdata[pot_id==1091 & created_at %gele% c("2020-08-15","2020-09-07"),]
+
+pot91pm2p5plot3=ggplot(data=pot91hour) +
+  geom_line(aes(x=created_at,y=pm2p5SPS)) + 
+  geom_vline(xintercept=ymd_hms(c("2020-08-21 00:00:00",
+                                  "2020-08-23 00:00:00",
+                                  "2020-08-28 00:00:00",
+                                  "2020-08-30 00:00:00",
+                                  "2020-09-04 00:00:00",
+                                  "2020-09-06 00:00:00",
+                                  "2020-09-11 00:00:00",
+                                  "2020-09-13 00:00:00"
+                                  )),size=1,color="red")
+
+
+pot91pm2p5plot3
+
+print(paste("observations: ",dim(pot91hour)[1]))
+
+# approximating NAs linearly
+
+
+pot91hourSeries=zoo(pot91hour$pm2p5SPS)
+
+pot91hourSeries=na.approx(pot91hourSeries)
+
+summary(pot91hourSeries)
+
+#plotting ACF, PACF
+
+plot(pot91hourSeries)
+
+
+acf(pot91hourSeries, lag.max=1000)
+
+
+pacf(pot91hourSeries, lag.max=300); abline(v=168,col="red")
+
+adf.test(pot91hourSeries,k=0)
+
+pot91model=auto.arima(pot91hourSeries)
+
+summary(pot91model)
+
+plot(forecast(pot91model,h=48))
+
+
+```
+
 
 
 
