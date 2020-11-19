@@ -13,13 +13,12 @@ loading libraries data from tsData.csv
 library(ggplot2)
 library(forcats)
 library(data.table)
-library(chron)
 library(fasttime)
-library(svglite)
 library(raster)
-library(ggmap)
 library(extraoperators)
 library(TTR)
+library(fda)
+library(lubridate)
 
 #setting parent directory as working directory
 
@@ -31,45 +30,78 @@ setwd(parentDir)
 
 #reading data
 
-tsData=fread("data/tsData.csv")
+wiseairdata=fread("data/rawdata.csv", drop = 16)
 
-head(tsData)
+# converting dates and time to POSIXct class (very fast)
+
+wiseairdata$created_at = fastPOSIXct(wiseairdata$created_at)
+
+# converting pot_id variable into a factor  (fast)
+wiseairdata$pot_id = as.factor(wiseairdata$pot_id)
 
 
 ```
 
-selecting and saving the time series of PM2.5 of pot 1091
+selecting and saving the time series of PM2.5 of pot 1091.
+Plotting the time series and evaluating how many observations are present
 
 ```{r}
 
-pot91=tsData[pot_id==1091 & created_at > "2020-08-20",]
+pot91=wiseairdata[pot_id==1091 ,]
 
-pot91=pot91[complete.cases(pot91$pm2p5SPS)]
+pot91pm2p5plot=ggplot(pot91) + geom_line(aes(x=created_at,y=pm2p5SPS) )
 
-start=min(pot91$created_at)
-
-end=max(pot91$created_at)
-
-pot91=ts(pot91$pm2p5SPS)
-
-plot.ts(pot91)
+pot91pm2p5plot
 
 
-
-pot91sma=SMA(pot91,n=24)
-
-plot.ts(pot91sma)
-
-pot91t=pot91-pot91sma
-
-ts.plot(pot91t)
-
-pot91tcomp=decompose(pot91t)
-
-
-
+print(paste("observations: ",dim(pot91)[1]))
 
 ```
+
+1) The time series has time irregularity.
+2) the time series appears non-stationary.
+In particular, the noisiness of the time series appears to increase when higher values are reached.
+Also, the high number of observations and non-stationarity makes analysis with stationary models non-viable.
+
+To apply SARIMA type models, the time series could be cut in different stages.
+
+For example, the time series appears stationary in august and september.
+
+plotting the time series in these periods
+
+```{r}
+
+
+pot91agosept=pot91[created_at %gele% c("2020-08-15","2020-09-07")]
+
+pot91pm2p5plot2=ggplot(data=pot91agosept) +
+  geom_line(aes(x=created_at,y=pm2p5SPS)) + 
+  geom_vline(xintercept=ymd_hms(c("2020-07-31 00:00:00",
+                                  "2020-08-02 00:00:00",
+                                  "2020-07-31 00:00:00",
+                                  "2020-08-02 00:00:00",
+                                  "2020-08-13 00:00:00",
+                                  "2020-08-15 00:00:00",
+                                  "2020-08-21 00:00:00",
+                                  "2020-08-23 00:00:00",
+                                  "2020-08-28 00:00:00",
+                                  "2020-08-30 00:00:00",
+                                  "2020-09-04 00:00:00",
+                                  "2020-09-06 00:00:00",
+                                  "2020-09-11 00:00:00",
+                                  "2020-09-13 00:00:00"
+                                  )),size=1,color="red")
+
+
+pot91pm2p5plot2
+
+print(paste("observations: ",dim(pot91agosept)[1]))
+
+```
+
+seasonality seems to appear, both on a daily and on a weekly basis. 
+The number of observations still seems very high, and the mean of the time series seems to increase 
+
 
 
 
