@@ -1,0 +1,77 @@
+---
+title: "Map of Ariannas in Milan"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+loading libraries data from tsData.csv
+
+
+```{r}
+library(ggplot2)
+library(forcats)
+library(data.table)
+library(chron)
+library(fasttime)
+library(svglite)
+library(raster)
+library(ggmap)
+library(extraoperators)
+library(TTR)
+
+#setting parent directory as working directory
+
+currentDir=getwd()
+
+parentDir=dirname(currentDir)
+
+setwd(parentDir)
+
+#reading data
+
+tsData=fread("data/tsData.csv")
+
+head(tsData)
+
+
+```
+
+selecting and saving the time series of PM2.5 of pot 1091
+
+```{r}
+
+pot91=tsData[pot_id==1091 & created_at > "2020-08-20",]
+
+pot91=pot91[complete.cases(pot91$pm2p5SPS)]
+
+start=min(pot91$created_at)
+
+end=max(pot91$created_at)
+
+pot91=ts(pot91$pm2p5SPS)
+
+plot.ts(pot91)
+
+
+
+pot91sma=SMA(pot91,n=24)
+
+plot.ts(pot91sma)
+
+pot91t=pot91-pot91sma
+
+ts.plot(pot91t)
+
+pot91tcomp=decompose(pot91t)
+
+
+
+
+```
+
+
+
+
+

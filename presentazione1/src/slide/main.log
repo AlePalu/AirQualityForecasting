@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.17)  18 NOV 2020 18:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.17)  19 NOV 2020 10:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1280,9 +1280,15 @@ Package pdftex.def Info: dataset.png  used on input line 105.
 (pdftex.def)             Requested size: 344.19533pt x 128.00159pt.
  [5
 
- <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/dataset.png>] [6
+ <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/dataset.png>]
+<timeIrregularity.png, id=171, 650.43pt x 361.35pt>
+File: timeIrregularity.png Graphic file (type png)
+<use timeIrregularity.png>
+Package pdftex.def Info: timeIrregularity.png  used on input line 113.
+(pdftex.def)             Requested size: 344.19533pt x 191.22235pt.
+ [6
 
-] [7
+ <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/timeIrregularity.png>] [7
 
 ] [8
 
@@ -1294,47 +1300,49 @@ Package pdftex.def Info: dataset.png  used on input line 105.
 
 ] [12
 
+] [13
+
 ]
-<correlation.png, id=365, 703.1871pt x 708.9687pt>
+<correlation.png, id=395, 703.1871pt x 708.9687pt>
 File: correlation.png Graphic file (type png)
 <use correlation.png>
-Package pdftex.def Info: correlation.png  used on input line 124.
+Package pdftex.def Info: correlation.png  used on input line 132.
 (pdftex.def)             Requested size: 140.63492pt x 141.79123pt.
- [13
-
- <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/correlation.png>]
-<plotDati.png, id=395, 1050.92625pt x 749.80125pt>
-File: plotDati.png Graphic file (type png)
-<use plotDati.png>
-Package pdftex.def Info: plotDati.png  used on input line 136.
-(pdftex.def)             Requested size: 157.63214pt x 112.46533pt.
  [14
 
- <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/plotDati.png>] [15
+ <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/correlation.png>]
+<plotDati.png, id=424, 1050.92625pt x 749.80125pt>
+File: plotDati.png Graphic file (type png)
+<use plotDati.png>
+Package pdftex.def Info: plotDati.png  used on input line 144.
+(pdftex.def)             Requested size: 157.63214pt x 112.46533pt.
+ [15
+
+ <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/plotDati.png>] [16
 
 ]
-<acf.png, id=455, 768.8725pt x 512.91624pt>
+<acf.png, id=485, 768.8725pt x 512.91624pt>
 File: acf.png Graphic file (type png)
 <use acf.png>
-Package pdftex.def Info: acf.png  used on input line 181.
+Package pdftex.def Info: acf.png  used on input line 189.
 (pdftex.def)             Requested size: 153.77177pt x 102.58142pt.
 
-Overfull \hbox (16.09575pt too wide) in paragraph at lines 181--181
+Overfull \hbox (16.09575pt too wide) in paragraph at lines 189--189
  [][] 
  []
 
-<pacf.png, id=456, 745.78625pt x 513.92pt>
+<pacf.png, id=486, 745.78625pt x 513.92pt>
 File: pacf.png Graphic file (type png)
 <use pacf.png>
-Package pdftex.def Info: pacf.png  used on input line 181.
+Package pdftex.def Info: pacf.png  used on input line 189.
 (pdftex.def)             Requested size: 149.1546pt x 102.78217pt.
-[16
+[17
 
- <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/acf.png> <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/pacf.png>] [17
-
-] [18
+ <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/acf.png> <d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/pacf.png>] [18
 
 ] [19
+
+] [20
 
 ]
 \tf@nav=\write10
@@ -1354,18 +1362,18 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 33452 strings out of 481381
- 647033 string characters out of 5919348
+ 33462 strings out of 481381
+ 647207 string characters out of 5919348
  1402866 words of memory out of 5000000
- 49521 multiletter control sequences out of 15000+600000
+ 49528 multiletter control sequences out of 15000+600000
  543098 words of font info for 57 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  107i,17n,111p,1160b,1656s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on "d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/main.pdf" (19 pages, 1400799 bytes).
+Output written on "d:/Bayesian Statistics/progetto/AirQualityForecasting/presentazione1/src/slide/main.pdf" (20 pages, 1450992 bytes).
 PDF statistics:
- 619 PDF objects out of 1000 (max. 8388607)
- 556 compressed objects within 6 object streams
- 39 named destinations out of 1000 (max. 500000)
- 106 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 648 PDF objects out of 1000 (max. 8388607)
+ 582 compressed objects within 6 object streams
+ 41 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
 
