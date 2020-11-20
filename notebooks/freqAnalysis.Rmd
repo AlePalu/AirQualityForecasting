@@ -99,9 +99,119 @@ zooming on this portion,seasonality seems to appear, both on a daily and on a we
 
 we apply an hourly mean to obtain a regular time series
 
+
 ```{r}
 
-#loading hourly data
+library(zoo)
+
+pot91zoo=zoo(x=pot91agosept$pm2p5SPS, order.by=pot91agosept$created_at)
+
+hourclassifier = function(dateinput) {
+  
+  inputhour=hour(dateinput)
+  dayandhour=paste(format(date(dateinput))," ",format(inputhour),":00:00",sep="") 
+  return(ymd_hms(dayandhour))
+}
+
+
+hour3classifier = function(dateinput) {
+  
+  inputhour=hour(dateinput)
+  dayandhour=paste(format(date(dateinput))," ",format(inputhour - inputhour %% 3),":00:00",sep="") 
+  return(ymd_hms(dayandhour))
+}
+
+hour4classifier = function(dateinput) {
+  
+  inputhour=hour(dateinput)
+  dayandhour=paste(format(date(dateinput))," ",format(inputhour - inputhour %% 4),":00:00",sep="") 
+  return(ymd_hms(dayandhour))
+}
+
+hour12classifier = function(dateinput) {
+  
+  inputhour=hour(dateinput)
+  dayandhour=paste(format(date(dateinput))," ",format(inputhour - inputhour %% 12),":00:00",sep="") 
+  return(ymd_hms(dayandhour))
+}
+
+
+
+
+
+pot91hour=aggregate(x=pot91zoo, by=hourclassifier, FUN=mean)
+
+summary(pot91hour)
+
+plot(pot91hour)
+
+ pot91hour
+
+```
+
+```{r}
+
+pot91hour3=aggregate(x=pot91zoo, by=hour3classifier, FUN=mean)
+
+summary(pot91hour3)
+
+plot(pot91hour3)
+
+ 
+```
+
+```{r}
+pot91hour4=aggregate(x=pot91zoo, by=hour4classifier, FUN=mean)
+
+summary(pot91hour4)
+
+plot(pot91hour4)
+```
+```{r}
+
+pacf(coredata(pot91hour4),lag.max = 100)
+
+pacf(coredata(pot91hour3),lag.max = 100)
+
+
+pot91hour3model=auto.arima(coredata(pot91hour3))
+
+summary(pot91hour3model)
+
+pot91hour4model=auto.arima(coredata(pot91hour4))
+
+summary(pot91hour4model)
+
+
+
+```
+```{r}
+
+pot91hour12=aggregate(x=pot91zoo, by=hour12classifier, FUN=mean)
+
+summary(pot91hour12)
+
+plot(pot91hour12)
+
+
+pacf(coredata(pot91hour12),lag.max = 30)
+
+pot91hour12model=auto.arima(coredata(pot91hour12))
+
+summary(pot91hour12model)
+
+
+
+```
+
+Now trying noise filtering, using ARPA measurements as benchmark. We first obtain ARPA measurements
+
+
+```{r}
+
+
+
+#loading hourly data with ARPA measurements
 
 currentDir=getwd()
 
@@ -109,13 +219,15 @@ parentDir=dirname(currentDir)
 
 setwd(parentDir)
 
-hourdata=fread("data/tsData.csv")
+tsdata=fread("data/tsData.csv")
 
-hourdata$created_at = fastPOSIXct(hourdata$created_at)
+tsdata$created_at = fastPOSIXct(ts$created_at)
 
 #plotting hourly data
 
 pot91hour=hourdata[pot_id==1091 & created_at %gele% c("2020-08-15","2020-09-07"),]
+
+
 
 pot91pm2p5plot3=ggplot(data=pot91hour) +
   geom_line(aes(x=created_at,y=pm2p5SPS)) + 
@@ -129,15 +241,20 @@ pot91pm2p5plot3=ggplot(data=pot91hour) +
                                   "2020-09-13 00:00:00"
                                   )),size=1,color="red")
 
-
 pot91pm2p5plot3
 
 print(paste("observations: ",dim(pot91hour)[1]))
 
 # approximating NAs linearly
+```
 
 
-pot91hourSeries=zoo(pot91hour$pm2p5SPS)
+now substituting NA values with linear approximations
+
+
+
+```{r}
+pot91hourSeries=zoo(x=pot91hour$pm2p5SPS,order.by=pot91hour$created_at,frequency=24)
 
 pot91hourSeries=na.approx(pot91hourSeries)
 
@@ -148,19 +265,93 @@ summary(pot91hourSeries)
 plot(pot91hourSeries)
 
 
-acf(pot91hourSeries, lag.max=1000)
+acf(coredata(pot91hourSeries), lag.max=180)
 
 
-pacf(pot91hourSeries, lag.max=300); abline(v=168,col="red")
+pacf(coredata(pot91hourSeries), lag.max=180)
+
+
 
 adf.test(pot91hourSeries,k=0)
 
-pot91model=auto.arima(pot91hourSeries)
+pot91model=auto.arima(coredata(pot91hourSeries))
 
 summary(pot91model)
 
 plot(forecast(pot91model,h=48))
+```
+now using 3 hour-means
 
+```{r}
+#using 3-hour means
+
+pot91hour3Series=aggregate(pot91hourSeries,,FUN=mean)
+
+summary(pot91hour3Series)
+
+plot(pot91hour3Series)
+
+#week = 56
+
+pacf(pot91hour3Series,lag.max = 120)
+
+#using 4-hour means
+
+pot91hour4Series=rollapply(pot91hourSeries,width=3,FUN=mean)
+
+plot(pot91hour4Series)
+
+#week = 42
+acf(pot91hour4Series,lag.max = 120)
+pacf(pot91hour3Series,lag.max = 120);
+
+
+pot91model=auto.arima(pot91hour4Series)
+
+
+summary(pot91model)
+
+
+plot(forecast(pot91model,h=6))
+
+#using 12-hour means
+
+pot91hour12Series=rollapply(pot91hourSeries,width=12,FUN=mean)
+
+plot(pot91hour12Series)
+
+#week = 14
+acf(pot91hour12Series,lag.max = 120)
+pacf(pot91hour12Series,lag.max = 120);
+
+pot91model=auto.arima(pot91hour12Series)
+
+
+summary(pot91model)
+
+
+plot(forecast(pot91model,h=6))
+```
+
+
+```{r}
+#using 24-hour means
+
+pot91hour24Series=aggregate(x=pot91hourSeries,by=day,FUN=mean)
+
+plot(pot91hour24Series)
+
+#week = 14
+acf(coredata(pot91hour24Series),lag.max = 10)
+pacf(coredata(pot91hour24Series),lag.max = 10);
+
+pot91model=auto.arima(pot91hour24Series)
+
+
+summary(pot91model)
+
+
+plot(forecast(pot91model,h=6))
 
 ```
 
