@@ -1,6 +1,3 @@
-nullFile <- file("all.Rout", open = "wt")
-sink(nullFile)
-
 library(readr);
 
 # stan libraries
