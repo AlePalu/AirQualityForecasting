@@ -8,10 +8,7 @@ library(raster)
 library(ggmap)
 
 #---------- Preparing the datasets for graphic exploration --------
-# we should consider having all numerical values under a single column "value" 
-# and having another Factor variable which describes the
-# type of measure (temperature, pm10, pm2p5)
-# since it would maybe be easier to plot with ggplot?
+
 
 # reading the database (fast) dropping a duplicated column (!?)
 wiseairdata=fread("data/rawdata.csv", drop = 16)
