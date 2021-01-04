@@ -3,11 +3,13 @@
 ## vars is a list of parameters we want to extract
 ## cI: if TRUE will plot also the credible intervals
 ## alpha: level of the credible interval to plot, default 0.025 (for a 95% credible interval)
-plotPosteriorDensity = function(sample, vars, cI = FALSE, alpha = 0.025){
+plotPosteriorDensity <- function(sample, vars, cI = FALSE, alpha = 0.025){
     # extract samples to plot
     plotData = rstan::extract(sample, vars) %>% 
                as_tibble() %>% 
                map_df(as_data_frame, .id = 'param')
+
+    print(head(plotData))
     
     plots = list()
     for(var in vars){
@@ -39,7 +41,7 @@ plotForecast <- function(testData, trainData, forecast, order, title, regressors
                          png = FALSE, fileTitle = NULL, limits = c(-50, 160)){
 
     forecastDF = data.frame(yF   = colMeans(forecast),
-                            xF   = (1:(dim(forecast)[2]))+ 24 + (order - 1),
+                            xF   = (1:(dim(forecast)[2]))+ 24,
                             ylow = apply(forecast, 2, quantile, p = 0.05),
                             yup  = apply(forecast, 2, quantile, p = 0.95))
     
@@ -113,7 +115,7 @@ plotPosteriorBoxplot <- function(sample, names){
     ggplot(dat) +
         geom_boxplot(aes(x = ind, y = values, fill = ind)) +
         geom_hline(aes(yintercept = 0), col = 2, lty = 2) + 
-        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1, face = "bold")) +
         theme(legend.position = "null") +
         xlab("") + 
         ylab("")

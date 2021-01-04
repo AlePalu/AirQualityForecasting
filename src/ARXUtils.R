@@ -81,8 +81,6 @@ ARXextract <- function(sample, regressors, p) {
     beta["beta.1"] <- NULL ## remove intercept
 
     result$ARpart <- beta[,1:p]
-
-    print(head(beta))
     
     ## temporary variable used to keep track of the already pulled parameters
     c = p

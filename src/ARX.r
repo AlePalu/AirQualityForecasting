@@ -182,3 +182,4 @@ mixedsort(list.files(path=sprintf("%s/frames/", getwd()), pattern = '*.png', ful
     image_write("ARXforecast.gif") ## write to current working dir
 
 save(movie, file = "ARX10forecastSimulation.dat")
+

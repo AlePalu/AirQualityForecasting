@@ -21,7 +21,7 @@ source("ARUtils.r")
 source("PlotUtils.r")
 
 ## import data
-data = read_csv("../../data/tsData.csv", col_types=cols());
+data = read_csv("../data/tsData.csv", col_types=cols());
 head(data)
 
 ## focus on the time series we are interested in
@@ -177,9 +177,9 @@ movie <- ARforecastRange(Ytrain1W, Ytest1W, parameters, c(1,12))
 
 ## save single frames...
 for (frame in ls(movie)) {
-    title <- sprintf("AR10 model - pm2p5 Forecast. Time horizon: %s hours", frame)
+    title <- sprintf("AR(2) model - pm2p5 Forecast. Time horizon: %s hours", frame)
     fileTitle <- sprintf("frame%s", frame)
-    plotForecast(Ytest1W, Ytrain1W, movie[[frame]], title, png = TRUE, fileTitle = fileTitle)    
+    plotForecast(Ytest1W, Ytrain1W, movie[[frame]], 2, title, png = TRUE, fileTitle = fileTitle)    
 }
 
 ## create animation
@@ -190,7 +190,7 @@ mixedsort(list.files(path=sprintf("%s/frames/", getwd()), pattern = '*.png', ful
         image_read() %>%              ## reads each path file
         image_join() %>%              ## joins image
         image_animate(fps=1) %>%      ## animates
-        image_write("ARforecast.gif") ## write to current working dir
+        image_write("AR2forecast.gif") ## write to current working dir
 
 ## :D
 

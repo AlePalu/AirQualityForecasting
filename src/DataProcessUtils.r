@@ -16,7 +16,7 @@ dataPrepare = function(y, X, p) {
     }
     ## add the X part
     for (var in ls(X)) {
-        for (t in 0:p) {
+        for (t in 1:p) {
             columnName <- sprintf("%s-%d", var, t)
             d[, columnName] <- shift(X[[var]], t)
         }
