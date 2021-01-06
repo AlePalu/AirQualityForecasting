@@ -1,0 +1,107 @@
+
+
+```{r}
+library(data.table)
+library(recipes)
+library(rstan)
+library(zoo)
+library(lubridate)
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
+```
+
+
+
+
+```{r}
+data = fread("../data/tsData.csv")
+
+head(data)
+```
+
+```{r}
+data$created_at = ymd_hms(data$created_at)
+
+
+```
+
+
+```{r}
+new = data[(pot_id == 1024 & created_at > "2020-08-10" & created_at < "2020-08-12"),]
+
+newTS = zoo(x = new$pm2p5SPS, order.by = new$created_at)
+
+newTSapprox=na.approx(newTS)
+
+plot(newTSapprox)
+
+```
+
+
+```{r}
+
+y = coredata(newTSapprox)
+
+N = length(y)
+
+## seasonality 
+p = 5 
+
+data = list(
+  y = y,
+  N = N,
+  p = p
+)
+
+fit = stan(file = "linearmodel.stan", data = data, control = list(adapt_delta = 0.99, max_treedepth = 20),iter = 4000)
+
+```
+
+```{r}
+pairs(fit, pars= c('alpha','beta','gamma','sigma'))
+```
+
+
+
+```{r}
+
+fit_summary = summary(fit)
+
+alpha = fit_summary$summary['alpha','mean']
+beta = fit_summary$summary['beta','mean']
+gamma = fit_summary$summary['gamma','mean']
+a0 = fit_summary$summary['a0','mean']
+b0 = fit_summary$summary['b0','mean']
+
+a = y
+b = y
+c = y
+c0=
+y_fit = y
+
+a[1]=a0
+b[1]=b0
+
+for(t in 2:N) {
+  a[t] = alpha*y[t-1] + (1 - alpha)*(a[t-1] + b[t-1]);
+  b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+}
+
+y_fit = a + b
+
+y_fit = zoo(x = y_fit, order.by = new$created_at)
+
+plot(y_fit)
+
+```
+
+```{r}
+
+pairs(fit, pars = c('alpha','beta','sigma'))
+
+
+```
+
+
+
+
