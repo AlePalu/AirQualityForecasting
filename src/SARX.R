@@ -26,8 +26,8 @@ data = read_csv("../data/tsData.csv", col_types=cols());
 head(data)
 
 ## introdue a new dummy variable day/night
-startNightH <- strptime("22:00:00", format = "%H:%M:%S")
-endNightH   <- strptime("06:00:00", format = "%H:%M:%S")
+startNightH <- strptime("19:00:00", format = "%H:%M:%S")
+endNightH   <- strptime("05:00:00", format = "%H:%M:%S")
 
 dateTimeVector = data %>% pull(created_at)
 
@@ -42,8 +42,19 @@ nightDummy <- lapply(dateTimeVector, function(x){
     }
 })
 
+## extract hour from datetime index
+hour <- lapply(dateTimeVector, function(x){
+    return(format(x, "%H:%M"))
+})
+
+day <- lapply(dateTimeVector, function(x){
+    return(weekdays(as.Date(x)))
+})
+
 ## add the dummy to the dataset
-data$night = as.numeric(unlist(nightDummy))
+data$night <- as.numeric(unlist(nightDummy))
+data$hour  <- as.factor(unlist(hour))
+data$day   <- as.factor(unlist(day))
 
 ## focus on the time series we are interested in
 interestingPot <- 1091
@@ -63,7 +74,7 @@ Ytest1W <- data[data$created_at >= parse_datetime(endDate) &
                 data$pot_id == interestingPot, ]
 Ytest1W <- Ytest1W[!is.na(Ytest1W$pm2p5SPS),] ## drop NaN
 
-## LMM autoregressive stan model
+## autoregressive stan model with seasonal effect
 stanModel = "
 data{
         int<lower = 0> N;       // number of obs
@@ -120,7 +131,7 @@ generated quantities{
 "
 
 ## compile model
-ARXSRmodel <- stan_model(model_code = stanModel)
+SARXmodel <- stan_model(model_code = stanModel)
 
 ## we want 4 different regimes depending on the variables weekend and night
 night = as.factor(Ytrain1W$night)
@@ -181,26 +192,48 @@ regressors$rain <- list(Ytrain1W$rain, p)
 ## get sample from model
 pm2p5 <- Ytrain1W$pm2p5SPS ## response to predict
 
-ARXSRsample <- ARXSRfit(ARXSRmodel, ## compiled stan model
+Wfull <- t(apply(W, 1, function(x){rep(x, each = (p+1))})) ## +1 for intercept
+
+ARdesignMatrix <- data.frame(intercept = rep(1, length(pm2p5)))
+for (t in 1:p) {
+    columnName <- sprintf("Y[t-%d]", t)
+    ARdesignMatrix[, columnName] <- shift(pm2p5, t)
+}
+
+## replicate ARdesignMatrix for each effect
+ARdesignMatrix <- t(apply(ARdesignMatrix, 1, function(x){rep(x, length(colnames(W)))}))
+
+## now musk ARdesignMatrix by the dummy matrix
+ARdesignMatrix <- ARdesignMatrix * Wfull
+head(ARdesignMatrix)
+
+## sample from this model
+ARXSRsample <- SARXfit(ARXSRmodel, ## compiled stan model
                         pm2p5,      ## response
-                        p,          ## autoregression order
+                        0,          ## autoregression order
                         regressors, ## regressors
-                        W)          ## regime effect design matrix
+                        ARdesignMatrix)          ## regime effect design matrix
+
+gammaDFfull <- data.frame(rstan::extract(ARXSRsample, perm = TRUE))
+gammaDFfull <- gammaDFfull[, grepl("gamma", colnames(gammaDFfull))]
+
+factorNames <- c()
+for(i in 1:dim(ARdesignMatrix)[2]){
+    factorNames <- c(factorNames, sprintf("%s - %s", colnames(ARdesignMatrix)[i], colnames(Wfull)[i]))
+}
+
+colnames(ARdesignMatrix) <- factorNames
+
+plotPosteriorBoxplot(gammaDFfull[,25:32], colnames(ARdesignMatrix)[25:32])
 
 ## check regime effect distribution a posteriori
 plotPosteriorDensity(ARXSRsample, c("gamma[1]", "gamma[2]", "gamma[3]", "gamma[4]"))
 
 ## try only weekend
 
-weekend = as.factor(Ytrain1W$weekend)
-## create design matrix for regime effect
-Gw <- model.matrix(~ weekend,
-                  contrasts.arg = list(weekend = contrasts(weekend, contrasts = F))
-                  )[,-1]
+## create design matrix for seasonal effect
+Gw <- matrix(Ytrain1W$weekend)
 
-## columns of G are, in order: night0 night1 weekend0 weekend1
-## rename for clarity
-colnames(Gw) <- c("weekday", "weekend")
 head(Gw)
 
 Gfull <- t(apply(Gw, 1, function(x){rep(x, each = (p+1))})) ## +1 for intercept
@@ -212,18 +245,8 @@ for (t in 1:p) {
     ARdesignMatrix[, columnName] <- shift(pm2p5, t)
 }
 
-## replicate design matrix nGr times
-ARdesignMatrix <- t(apply(ARdesignMatrix, 1, function(x){rep(x, length(colnames(Gw)))}))
-
 ## now musk ARdesignMatrix by the dummy matrix
 ARdesignMatrix <- ARdesignMatrix * Gfull
-
-factorNames <- c()
-for(i in 1:dim(ARdesignMatrix)[2]){
-    factorNames <- c(factorNames, sprintf("%s - %s", colnames(ARdesignMatrix)[i], colnames(Gfull)[i]))
-}
-
-colnames(ARdesignMatrix) <- factorNames
 
 ## inspect ARdesignMatrix
 head(ARdesignMatrix)
@@ -234,27 +257,21 @@ ARXSRsample <- ARXSRfit(ARXSRmodel,      ## compiled stan model
                         regressors,      ## regressors
                         ARdesignMatrix)  ## regime effect design matrix
 
-plotPosteriorDensity(ARXSRsample, c("gamma[10]", "gamma[11]"))
+plotPosteriorDensity(ARXSRsample, c("gamma[1]", "gamma[2]", "gamma[3]"))
 
 gammaDF <- data.frame(rstan::extract(ARXSRsample, perm = TRUE))
 gammaDF <- gammaDF[, grepl("gamma", colnames(gammaDF))]
 
+x11()
 plotPosteriorBoxplot(gammaDF, colnames(ARdesignMatrix))
 
 ## try only night/day
 
-night = as.factor(Ytrain1W$night)
 ## create design matrix for regime effect
-Gw <- model.matrix(~ night,
-                  contrasts.arg = list(night = contrasts(night, contrasts = F))
-                  )[,-1]
+Gn <- matrix(Ytrain1W$night)
+head(Gn)
 
-## columns of G are, in order: night0 night1 weekend0 weekend1
-## rename for clarity
-colnames(Gw) <- c("day", "night")
-head(Gw)
-
-Gfull <- t(apply(Gw, 1, function(x){rep(x, each = (p+1))})) ## +1 for intercept
+Gfull <- t(apply(Gn, 1, function(x){rep(x, each = (p+1))})) ## +1 for intercept
 
 ## build the autoregressive design matrix
 ARdesignMatrix <- data.frame(intercept = rep(1, length(pm2p5)))
@@ -263,33 +280,228 @@ for (t in 1:p) {
     ARdesignMatrix[, columnName] <- shift(pm2p5, t)
 }
 
-## replicate design matrix nGr times
-ARdesignMatrix <- t(apply(ARdesignMatrix, 1, function(x){rep(x, length(colnames(Gw)))}))
-
-## now musk ARdesignMatrix by the dummy matrix
+## musk ARdesignMatrix by the dummy matrix
 ARdesignMatrix <- ARdesignMatrix * Gfull
-
-factorNames <- c()
-for(i in 1:dim(ARdesignMatrix)[2]){
-    factorNames <- c(factorNames, sprintf("%s - %s", colnames(ARdesignMatrix)[i], colnames(Gfull)[i]))
-}
-
-colnames(ARdesignMatrix) <- factorNames
 
 ## inspect ARdesignMatrix
 head(ARdesignMatrix)
 
-ARXSRsample <- ARXSRfit(ARXSRmodel,      ## compiled stan model
+ARXSRsampleNight <- ARXSRfit(ARXSRmodel,      ## compiled stan model
+                             pm2p5,           ## response
+                             p,               ## autoregression order
+                             regressors,      ## regressors
+                             ARdesignMatrix)  ## regime effect design matrix
+
+gammaDFnight <- data.frame(rstan::extract(ARXSRsampleNight, perm = TRUE))
+gammaDFnight <- gammaDFnight[, grepl("gamma", colnames(gammaDFnight))]
+
+plotPosteriorBoxplot(gammaDFnight, colnames(ARdesignMatrix))
+
+## weekend/weekday + day/night
+
+Gwn <- matrix(Ytrain1W$weekend)
+Gwn <- cbind(Gwn, Ytrain1W$night)
+
+colnames(Gwn) <- c("weekend", "night")
+
+Gwnfull <- t(apply(Gwn, 1, function(x){rep(x, each = (p+1))})) ## +1 for intercept
+
+ARdesignMatrix <- data.frame(intercept = rep(1, length(pm2p5)))
+for (t in 1:p) {
+    columnName <- sprintf("Y[t-%d]", t)
+    ARdesignMatrix[, columnName] <- shift(pm2p5, t)
+}
+
+## replicate ARdesignMatrix for each effect
+ARdesignMatrix <- t(apply(ARdesignMatrix, 1, function(x){rep(x, length(colnames(Gwn)))}))
+
+## now musk ARdesignMatrix by the dummy matrix
+ARdesignMatrix <- ARdesignMatrix * Gwnfull
+head(ARdesignMatrix)
+
+SARXsampleNW <- SARXfit(ARXSRmodel,      ## compiled stan model
                         pm2p5,           ## response
-                        p,               ## autoregression order
+                        0,               ## autoregression order
                         regressors,      ## regressors
                         ARdesignMatrix)  ## regime effect design matrix
 
-gammaDF <- data.frame(rstan::extract(ARXSRsample, perm = TRUE))
-gammaDF <- gammaDF[, grepl("gamma", colnames(gammaDF))]
+## save the sampling
+save(SARXsampleNW, file = "SARXsampleNW.dat")
 
-plotPosteriorBoxplot(gammaDF, colnames(ARdesignMatrix))
+factorNames <- c()
+for(i in 1:dim(ARdesignMatrix)[2]){
+    factorNames <- c(factorNames, sprintf("%s - %s", colnames(ARdesignMatrix)[i], colnames(Gwnfull)[i]))
+}
 
+colnames(ARdesignMatrix) <- factorNames
+
+gammaDFnw <- data.frame(rstan::extract(SARXsampleNW, perm = TRUE))
+gammaDFnw <- gammaDFnw[, grepl("gamma", colnames(gammaDFnw))]
+
+plotPosteriorBoxplot(gammaDFnw, colnames(ARdesignMatrix))
 
 
 ## fare codice per la forecast
+
+## only intercept for weekend
+SARXsampleOW <- SARXfit(ARXSRmodel,      ## compiled stan model
+                        pm2p5,           ## response
+                        p,               ## autoregression order
+                        regressors,      ## regressors
+                        data.frame(Ytrain1W$weekend))  ## regime effect design matrix
+
+gammaDFow <- data.frame(rstan::extract(SARXsampleOW, perm = TRUE))
+gammaDFow <- gammaDFow[, grepl("gamma", colnames(gammaDFow))]
+
+plotPosteriorDensity(SARXsampleOW, c("gamma"))
+
+
+## model with 24 hourly factor
+hour <- Ytrain1W$hour
+Gh <- model.matrix(~ hour,
+                   contrasts.arg = list(hour = contrasts(hour, contrasts = F))
+                  )[,-1]
+
+## sample from this model
+SARXsampleH <- SARXfit(ARXSRmodel,      ## compiled stan model
+                       pm2p5,           ## response
+                       p,               ## autoregression order
+                       regressors,      ## regressors
+                       Gh)  ## regime effect design matrix
+
+save(SARXsampleH, file = "SARXsampleH.dat")
+
+gammaDFh <- data.frame(rstan::extract(SARXsampleH, perm = TRUE))
+gammaDFh <- gammaDFh[, grepl("gamma", colnames(gammaDFh))]
+
+plotPosteriorBoxplot(gammaDFh, levels(hour))
+
+## pot in Milano centro (loreto)
+interestingPot <- 1018
+startDate      <- "2020-09-01"
+endDate        <- "2020-10-27" ## move endDate one week before
+fd             <- 7 ## one week simulation
+
+## train dataset
+Ytrain1W <- data[data$created_at > parse_datetime(startDate) &
+                 data$created_at < parse_datetime(endDate) &
+                 data$pot_id == interestingPot, ]
+Ytrain1W <- Ytrain1W[!is.na(Ytrain1W$pm2p5SPS), ] ## drop NaN
+
+## test dataset
+Ytest1W <- data[data$created_at >= parse_datetime(endDate) &
+                data$created_at < parse_datetime(as.character(as.Date(endDate) + fd)) &
+                data$pot_id == interestingPot, ]
+Ytest1W <- Ytest1W[!is.na(Ytest1W$pm2p5SPS),] ## drop NaN
+
+p <- 7                    ## order of autoregression
+
+## external regressors
+regressors      <- new.env(hash = TRUE) ## create hashmap in R
+regressors$temp <- list(Ytrain1W$temperature_sht, p)
+regressors$hum  <- list(Ytrain1W$humidity_sht, p)
+regressors$wind <- list(Ytrain1W$wind, p)
+regressors$rain <- list(Ytrain1W$rain, p)
+
+## get sample from model
+pm2p5 <- Ytrain1W$pm2p5SPS ## response to predict
+
+## try 24 hour factor model with this series
+
+## model with 24 hourly factor
+hour <- Ytrain1W$hour
+Gh <- model.matrix(~ hour,
+                   contrasts.arg = list(hour = contrasts(hour, contrasts = F))
+                  )[,-1]
+
+## sample from this model
+SARXsampleH2 <- SARXfit(SARXmodel,      ## compiled stan model
+                        pm2p5,           ## response
+                        p,               ## autoregression order
+                        regressors,      ## regressors
+                        Gh)  ## regime effect design matrix
+
+save(SARXsampleH2, file = "SARXsampleHLoreto.dat")
+
+gammaDFh <- data.frame(rstan::extract(SARXsampleH2, perm = TRUE))
+gammaDFh <- gammaDFh[, grepl("gamma", colnames(gammaDFh))]
+
+plotPosteriorBoxplot(gammaDFh, levels(hour))
+
+## forecast
+
+hourTest <- Ytest1W$hour
+Ghtest <- model.matrix(~ hourTest,
+                       contrasts.arg = list(hourTest = contrasts(hourTest, contrasts = F))
+                       )[,-1]
+
+parameters <- SARXextract(SARXsampleH2, regressors, p)
+
+
+forecast <- SARXforecast(data = pm2p5,
+                         reg_part = regressors,
+                         G = Ghtest,
+                         sample = parameters,
+                         horizon = 24)
+
+test_regressors      <- new.env(hash = TRUE) ## create hashmap in R
+test_regressors$temp <- list(Ytest1W$temperature_sht, p)
+test_regressors$hum  <- list(Ytest1W$humidity_sht, p)
+test_regressors$wind <- list(Ytest1W$wind, p)
+test_regressors$rain <- list(Ytest1W$rain, p)
+
+liveForecast <- SARXLiveForecast(
+    Ytrain    = Ytrain1W$pm2p5SPS,
+    Xtrain    = regressors,
+    Ytest     = Ytest1W$pm2p5SPS,
+    Xtest     = test_regressors,
+    G         = Ghtest,
+    sample    = parameters,
+    horizon   = 2
+)
+
+plotForecast(Ytest1W$pm2p5SPS, Ytrain1W$pm2p5SPS, liveForecast, p, "SARX(7) model - pm2p5 Forecast. Time horizon: 2h")
+
+movie <- SARXforecastRange(
+    Ytrain    = Ytrain1W$pm2p5SPS,
+    Xtrain    = regressors,
+    Ytest     = Ytest1W$pm2p5SPS,
+    Xtest     = test_regressors,
+    G         = Ghtest,
+    sample    = parameters,
+    range     = c(1,12)  ## from 1 hour to 12 hours forecast
+)
+
+## model with 7 day factor
+day <- Ytrain1W$day
+
+Gd <- model.matrix(~ day,
+                   contrasts.arg = list(day = contrasts(day, contrasts = F))
+                   )[,-1]
+
+SARXsampleD <- SARXfit(SARXmodel,      ## compiled stan model
+                       pm2p5,           ## response
+                       p,               ## autoregression order
+                       regressors,      ## regressors
+                       Gd)  ## regime effect design matrix
+
+save(SARXsampleD, file = "SARXsampleDLoreto.dat")
+
+gammaDFd <- data.frame(rstan::extract(SARXsampleD, perm = TRUE))
+gammaDFd <- gammaDFd[, grepl("gamma", colnames(gammaDFd))]
+
+dat <- stack(as.data.frame(gammaDFd))
+dat$ind <- rep(levels(day), each = dim(SARXsampleD)[1])
+
+x11()
+ggplot(dat) +
+    geom_boxplot(aes(x = ind, y = values, fill = ind)) +
+    geom_hline(aes(yintercept = 0), col = 2, lty = 2) + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, face = "bold")) +
+    theme(legend.position = "null") +
+    xlab("") + 
+    ylab("")
+
+
+plotPosteriorBoxplot(gammaDFd, levels(day))
+

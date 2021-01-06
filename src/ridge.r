@@ -17,10 +17,29 @@ library(dplyr);
 options(warns = -1)
 
 source("DataProcessUtils.r")
+source("ARXUtils.R")
 source("PlotUtils.r")
 
 data <- read_csv("../data/tsData.csv", col_types = cols())
 head(data)
+
+## focus on the time series we are interested in
+interestingPot <- 1091
+startDate      <- "2020-09-01"
+endDate        <- "2020-10-27" ## move endDate one week before
+fd             <- 7 ## one week simulation
+
+## train dataset
+Ytrain1W <- data[data$created_at > parse_datetime(startDate) &
+                 data$created_at < parse_datetime(endDate) &
+                 data$pot_id == interestingPot, ]
+Ytrain1W <- Ytrain1W[!is.na(Ytrain1W$pm2p5SPS), ] ## drop NaN
+
+## test dataset
+Ytest1W <- data[data$created_at >= parse_datetime(endDate) &
+                data$created_at < parse_datetime(as.character(as.Date(endDate) + fd)) &
+                data$pot_id == interestingPot, ]
+Ytest1W <- Ytest1W[!is.na(Ytest1W$pm2p5SPS),] ## drop NaN
 
 stanModelRidge <- "
 data{
@@ -62,33 +81,23 @@ model{
 
 ARmodelRidge <- stan_model(model_code = stanModelRidge)
 
-interestingPot <- 1091
-startDate      <- "2020-09-01"
-endDate        <- "2020-10-27" 
-fd             <- 7            ## one week simulation
+regressors      <- new.env(hash = TRUE) ## create hashmap in R
+regressors$temp <- Ytrain1W$temperature_sht
+regressors$hum  <- Ytrain1W$humidity_sht
+regressors$wind <- Ytrain1W$wind
+regressors$rain <- Ytrain1W$rain
 
-data_potid <- data[data$created_at > parse_datetime(startDate) &
-                   data$created_at < parse_datetime(endDate) &
-                   data$pot_id == interestingPot, ]
-data_potid <- data_potid[!is.na(data_potid$pm2p5SPS), ] ## remove NaN
-head(data_potid)
-
-input_data_all      <- new.env(hash = TRUE) ## create hashmap in R
-input_data_all$temp <- data_potid$temperature_sht
-input_data_all$hum  <- data_potid$humidity_sht
-input_data_all$wind <- data_potid$wind
-input_data_all$rain <- data_potid$rain
-
-pm2p5 <- data_potid$pm2p5SPS ## response to predict
+pm2p5 <- Ytrain1W$pm2p5SPS ## response to predict
 
 p <- 7 ## order of autoregression
 
-d <- dataPrepare(pm2p5, input_data_all, p)
+## design matrix
+d <- dataPrepare(pm2p5, regressors, p)
 head(d)
 
 stanData <- list(
     N = nrow(d),
-    K = p + (length(ls(input_data_all)) * (p)) + 1,
+    K = p + (length(ls(regressors)) * (p)) + 1,
     Y = pm2p5[1:nrow(d)],
     X = d,
     scale_s2 = 2
@@ -106,7 +115,7 @@ ARX7sampleRidge <- sampling(ARmodelRidge,
 save(ARX7sampleRidge, file = "ARX7RidgeNo0.dat")
 
 ## load data without running stan instead!!
-load("ARX7Ridge.dat")
+load("../cestino/ARX7RidgeNo0.dat")
 
 ## inspect lambda a posteriori
 plotPosteriorDensity(ARX7sampleRidge, c("lambda"))
@@ -141,8 +150,51 @@ x11()
 ggplot(dat) +
     geom_boxplot(aes(x = ind, y = values, fill = ind)) +
     geom_hline(aes(yintercept = 0), col = 2, lty = 2) + 
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1,
+                                     face = "bold",
+                                     size = 10)) +
     theme(legend.position = "null") +
     xlab("") + 
     ylab("") +
     scale_x_discrete(limits=rev(mixedsort(colnames(d))))
+
+## movie of simulation
+regressors      <- new.env(hash = TRUE) ## create hashmap in R
+regressors$temp <- list(Ytrain1W$temperature_sht, p)
+regressors$hum  <- list(Ytrain1W$humidity_sht, p)
+regressors$wind <- list(Ytrain1W$wind, p)
+regressors$rain <- list(Ytrain1W$rain, p)
+
+test_regressors      <- new.env(hash = TRUE) ## create hashmap in R
+test_regressors$temp <- list(Ytest1W$temperature_sht, p)
+test_regressors$hum  <- list(Ytest1W$humidity_sht, p)
+test_regressors$wind <- list(Ytest1W$wind, p)
+test_regressors$rain <- list(Ytest1W$rain, p)
+
+parameters <- ARXextract(ARX7sampleRidge, regressors, p)
+
+movie <- ARXforecastRange(
+    Ytrain    = Ytrain1W$pm2p5SPS,
+    Xtrain    = regressors,
+    Ytest     = Ytest1W$pm2p5SPS,
+    Xtest     = test_regressors,
+    sample    = parameters,
+    range     = c(1,12)  ## from 1 hour to 12 hours forecast
+)
+
+## save single frames...
+for (frame in ls(movie)) {
+    title <- sprintf("ARX(7) model - ridge regularization. pm2p5 Forecast. Time horizon: %s hours", frame)
+    fileTitle <- sprintf("frame%s", frame)
+    plotForecast(Ytest1W$pm2p5SPS, Ytrain1W$pm2p5SPS, movie[[frame]], p, title, png = TRUE, fileTitle = fileTitle) 
+}
+
+## create animation
+library(magick) ## (requires ImageMagick installed on system)
+library(gtools)
+
+mixedsort(list.files(path=sprintf("%s/frames/", getwd()), pattern = '*.png', full.names = TRUE)) %>% 
+    image_read() %>%               ## reads each path file
+    image_join() %>%               ## joins image
+    image_animate(fps=1) %>%       ## animates
+    image_write("ARX7Ridgeforecast.gif") ## write to current working dir
