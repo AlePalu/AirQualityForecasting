@@ -17,9 +17,9 @@ library(dplyr);
 options(warns = -1)
 
 ## import custom functions
-source("DataProcessUtils.r")
+source("DataProcessUtils.R")
 source("SARXUtils.R")
-source("PlotUtils.r")
+source("PlotUtils.R")
 
 ## import data
 data = read_csv("../data/tsData.csv", col_types=cols());
@@ -74,64 +74,8 @@ Ytest1W <- data[data$created_at >= parse_datetime(endDate) &
                 data$pot_id == interestingPot, ]
 Ytest1W <- Ytest1W[!is.na(Ytest1W$pm2p5SPS),] ## drop NaN
 
-## autoregressive stan model with seasonal effect
-stanModel = "
-data{
-        int<lower = 0> N;       // number of obs
-        int<lower = 0> K;       // number of covariates (including the intercept)
-        int<lower = 0> nGr;     // number of groups
-
-        vector[N] Y;            // response
-        matrix[N, K] X;	        // covariates (fixed effects)
-        matrix[N, nGr] G;       // groups allocation (regime effect)
-
-	// prior parameters
-        vector[K] mean_theta;	
-        vector[K] var_theta;
-        real<lower = 0> scale_s2;
-}
-
-parameters{
-        real<lower = 0> sigma2;
-        vector[nGr] sigma2_regime;
-
-        vector[K] theta;    // regression coefficients
-        vector[nGr] gamma;  // regime specific effect
-}
-
-transformed parameters{
-        vector[N] mu;
-        for(i in 1:N){
-            mu[i] = row(X, i) * theta + row(G, i) * gamma;
-        }
-}
-
-model{
-        // Prior:
-        sigma2 ~ inv_gamma(2., scale_s2);
-        for(k in 1:K) {
-            theta[k] ~ normal(mean_theta[k], pow(var_theta[k], 0.5));
-        }
-
-        for(j in 1:nGr){
-            sigma2_regime[j] ~ inv_gamma(2,10);
-            gamma[j] ~ normal(0.0, pow(sigma2_regime[j], 0.5));
-        }
-
-        // Likelihood:
-        Y ~ normal(mu, pow(sigma2, 0.5));
-}
-
-generated quantities{
-        vector[N] log_lik;
-        for (j in 1:N) {
-            log_lik[j] = normal_lpdf(Y[j] | mu[j], pow(sigma2, 0.5));
-        }
-}
-"
-
 ## compile model
-SARXmodel <- stan_model(model_code = stanModel)
+SARXmodel <- stan_model(file = "modelFiles/SARX.stan")
 
 ## we want 4 different regimes depending on the variables weekend and night
 night = as.factor(Ytrain1W$night)
@@ -455,9 +399,10 @@ liveForecast <- SARXLiveForecast(
     Xtrain    = regressors,
     Ytest     = Ytest1W$pm2p5SPS,
     Xtest     = test_regressors,
-    G         = Ghtest,
+    Gtrain    = Gh,
+    Gtest     = Ghtest,
     sample    = parameters,
-    horizon   = 2
+    horizon   = 1
 )
 
 plotForecast(Ytest1W$pm2p5SPS, Ytrain1W$pm2p5SPS, liveForecast, p, "SARX(7) model - pm2p5 Forecast. Time horizon: 2h")
@@ -467,10 +412,31 @@ movie <- SARXforecastRange(
     Xtrain    = regressors,
     Ytest     = Ytest1W$pm2p5SPS,
     Xtest     = test_regressors,
-    G         = Ghtest,
+    Gtrain    = Gh,
+    Gtest     = Ghtest,
     sample    = parameters,
     range     = c(1,12)  ## from 1 hour to 12 hours forecast
 )
+
+## save single frames...
+for (frame in ls(movie)) {
+    title <- sprintf("SARX(7) model - pm2p5 Forecast. Time horizon: %s hours", frame)
+    fileTitle <- sprintf("frame%s", frame)
+    plotForecast(Ytest1W$pm2p5SPS, Ytrain1W$pm2p5SPS, movie[[frame]], p, title, png = TRUE, fileTitle = fileTitle)    
+}
+
+save(movie, file = "SARX7forecastMovie.dat")
+
+## create animation
+library(magick) ## (requires ImageMagick installed on system)
+library(gtools)
+
+mixedsort(list.files(path=sprintf("%s/frames/", getwd()), pattern = '*.png', full.names = TRUE)) %>% 
+        image_read() %>%              ## reads each path file
+        image_join() %>%              ## joins image
+        image_animate(fps=1) %>%      ## animates
+        image_write("SARX7forecast.gif") ## write to current working dir
+
 
 ## model with 7 day factor
 day <- Ytrain1W$day
@@ -505,3 +471,209 @@ ggplot(dat) +
 
 plotPosteriorBoxplot(gammaDFd, levels(day))
 
+## sarx optimizzato con risultati ridge
+
+## load libraries...
+library(readr);
+
+library(rstan);   ## R interface to stan
+library(parallel) ## parallel computing
+library(rjags)    ## R interface to JAGS
+library(coda)
+
+## plot libraries
+library(ggplot2);
+library(gridExtra)
+library(purrr);
+library(dplyr);
+
+options(warns = -1)
+
+## import custom functions
+source("DataProcessUtils.r")
+source("SARXUtils.R")
+source("PlotUtils.r")
+
+## import data
+data = read_csv("../data/tsData.csv", col_types=cols());
+head(data)
+
+## introdue a new dummy variable day/night
+startNightH <- strptime("19:00:00", format = "%H:%M:%S")
+endNightH   <- strptime("05:00:00", format = "%H:%M:%S")
+
+dateTimeVector = data %>% pull(created_at)
+
+nightDummy <- lapply(dateTimeVector, function(x){
+    time = strptime(format(x, "%H:%M:%S"), format = "%H:%M:%S")
+
+    ## check if night
+    if(time >= startNightH || time <= endNightH){
+        return(1)
+    } else {
+        return(0)
+    }
+})
+
+## extract hour from datetime index
+hour <- lapply(dateTimeVector, function(x){
+    return(format(x, "%H:%M"))
+})
+
+day <- lapply(dateTimeVector, function(x){
+    return(weekdays(as.Date(x)))
+})
+
+## add the dummy to the dataset
+data$night <- as.numeric(unlist(nightDummy))
+data$hour  <- as.factor(unlist(hour))
+data$day   <- as.factor(unlist(day))
+
+## focus on the time series we are interested in
+interestingPot <- 1091
+startDate      <- "2020-09-01"
+endDate        <- "2020-10-27" ## move endDate one week before
+fd             <- 7 ## one week simulation
+
+## train dataset
+Ytrain1W <- data[data$created_at > parse_datetime(startDate) &
+                 data$created_at < parse_datetime(endDate) &
+                 data$pot_id == interestingPot, ]
+Ytrain1W <- Ytrain1W[!is.na(Ytrain1W$pm2p5SPS), ] ## drop NaN
+
+## test dataset
+Ytest1W <- data[data$created_at >= parse_datetime(endDate) &
+                data$created_at < parse_datetime(as.character(as.Date(endDate) + fd)) &
+                data$pot_id == interestingPot, ]
+Ytest1W <- Ytest1W[!is.na(Ytest1W$pm2p5SPS),] ## drop NaN
+
+## autoregressive stan model with seasonal effect
+stanModel = "
+data{
+        int<lower = 0> N;       // number of obs
+        int<lower = 0> K;       // number of covariates (including the intercept)
+        int<lower = 0> nGr;     // number of groups
+
+        vector[N] Y;            // response
+        matrix[N, K] X;	        // covariates (fixed effects)
+        matrix[N, nGr] G;       // groups allocation (regime effect)
+
+	// prior parameters
+        vector[K] mean_theta;	
+        vector[K] var_theta;
+        real<lower = 0> scale_s2;
+}
+
+parameters{
+        real<lower = 0> sigma2;
+        vector[nGr] sigma2_regime;
+
+        vector[K] theta;    // regression coefficients
+        vector[nGr] gamma;  // regime specific effect
+}
+
+transformed parameters{
+        vector[N] mu;
+        for(i in 1:N){
+            mu[i] = row(X, i) * theta + row(G, i) * gamma;
+        }
+}
+
+model{
+        // Prior:
+        sigma2 ~ inv_gamma(2., scale_s2);
+        for(k in 1:K) {
+            theta[k] ~ normal(mean_theta[k], pow(var_theta[k], 0.5));
+        }
+
+        for(j in 1:nGr){
+            sigma2_regime[j] ~ inv_gamma(2,10);
+            gamma[j] ~ normal(0.0, pow(sigma2_regime[j], 0.5));
+        }
+
+        // Likelihood:
+        Y ~ normal(mu, pow(sigma2, 0.5));
+}
+
+generated quantities{
+        vector[N] log_lik;
+        for (j in 1:N) {
+            log_lik[j] = normal_lpdf(Y[j] | mu[j], pow(sigma2, 0.5));
+        }
+}
+"
+
+## compile model
+SARXmodel <- stan_model(model_code = stanModel)
+
+p <- 2                    ## order of autoregression
+
+## external regressors
+regressors      <- new.env(hash = TRUE) ## create hashmap in R
+regressors$temp <- list(Ytrain1W$temperature_sht, 2)
+regressors$hum  <- list(Ytrain1W$humidity_sht, 1)
+regressors$rain <- list(Ytrain1W$rain, 3)
+
+test_regressors      <- new.env(hash = TRUE) ## create hashmap in R
+test_regressors$temp <- list(Ytest1W$temperature_sht, 2)
+test_regressors$hum  <- list(Ytest1W$humidity_sht, 1)
+test_regressors$rain <- list(Ytest1W$rain, 3)
+
+## get sample from model
+pm2p5 <- Ytrain1W$pm2p5SPS ## response to predict
+
+hour <- Ytrain1W$hour
+Gh <- model.matrix(~ hour,
+                   contrasts.arg = list(hour = contrasts(hour, contrasts = F))
+                  )[,-1]
+
+## sample from this model
+SARXsampleH3 <- SARXfit(SARXmodel,      ## compiled stan model
+                        pm2p5,           ## response
+                        p,               ## autoregression order
+                        regressors,      ## regressors
+                        Gh)  ## regime effect design matrix
+
+gammaDFh <- data.frame(rstan::extract(SARXsampleH3, perm = TRUE))
+gammaDFh <- gammaDFh[, grepl("gamma", colnames(gammaDFh))]
+
+plotPosteriorBoxplot(gammaDFh, levels(hour))
+
+## forecast
+
+hourTest <- Ytest1W$hour
+Ghtest <- model.matrix(~ hourTest,
+                       contrasts.arg = list(hourTest = contrasts(hourTest, contrasts = F))
+                       )[,-1]
+
+parameters <- SARXextract(SARXsampleH3, regressors, p)
+
+movie <- SARXforecastRange(
+    Ytrain    = Ytrain1W$pm2p5SPS,
+    Xtrain    = regressors,
+    Ytest     = Ytest1W$pm2p5SPS,
+    Xtest     = test_regressors,
+    Gtrain    = Gh,
+    Gtest     = Ghtest,
+    sample    = parameters,
+    range     = c(1,12)  ## from 1 hour to 12 hours forecast
+)
+
+## save single frames...
+for (frame in ls(movie)) {
+    title <- sprintf("SARX(2,2,1,3) model - pm2p5 Forecast. Time horizon: %s hours", frame)
+    fileTitle <- sprintf("frame%s", frame)
+    plotForecast(Ytest1W$pm2p5SPS, Ytrain1W$pm2p5SPS, movie[[frame]], p, title, png = TRUE, fileTitle = fileTitle)    
+}
+
+save(movie, file = "SARX7forecastMovie.dat")
+
+## create animation
+library(magick) ## (requires ImageMagick installed on system)
+library(gtools)
+
+mixedsort(list.files(path=sprintf("%s/frames/", getwd()), pattern = '*.png', full.names = TRUE)) %>% 
+        image_read() %>%              ## reads each path file
+        image_join() %>%              ## joins image
+        image_animate(fps=1) %>%      ## animates
+        image_write("SARX2213forecast.gif") ## write to current working dir

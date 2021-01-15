@@ -27,6 +27,8 @@ BIC <- function(sample, data){
     r <- dim(theta)[2] ## number of parameters
     n <- length(data)  ## number of points
 
+    print(length(posteriorMean))
+    
     ## compute likelihood of data, assumed normally distributed (works for AR and ARX)
     llik = dmvnorm(data, posteriorMean, diag(rep(sigma2, length(data))), log = TRUE)
 

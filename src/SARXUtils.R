@@ -203,9 +203,9 @@ SARXforecast <- function(data, reg_part, G, sample, horizon){
     invisible(forecast) # return the forecast as an M x horizon matrix    
 }
 
-SARXLiveForecast <- function(Ytrain, Xtrain, Ytest, Xtest, G, sample, horizon){
+SARXLiveForecast <- function(Ytrain, Xtrain, Ytest, Xtest, Gtrain, Gtest, sample, horizon){
     l_test = length(Ytest)
-    forecast = matrix(NA, nrow = nrow(sample$ARpart), ncol = l_test - horizon - 1)
+    forecast = matrix(NA, nrow = nrow(sample$ARpart), ncol = l_test)
 
     order = dim(sample$ARpart)[2]
 
@@ -226,10 +226,9 @@ SARXLiveForecast <- function(Ytrain, Xtrain, Ytest, Xtest, G, sample, horizon){
     }
 
     response = c(Ytrain[(length(Ytrain) - maxOrder - horizon):length(Ytrain)], Ytest)
-
-    nG = dim(G)[1]
+    G = rbind(Gtrain[(dim(Gtrain)[1] - horizon):dim(Gtrain)[1],], Gtest)
     
-    for(t in seq(maxOrder + horizon + 1, length(response) - horizon - 1)){ ## can't know G more than this
+    for(t in seq(maxOrder + horizon + 1, length(response))){ ## can't know G more than this
         ## supply to SARXforecast data as they would arrive in real world
         ## hour by hour
         liveData = new.env(hash = TRUE)
@@ -238,7 +237,7 @@ SARXLiveForecast <- function(Ytrain, Xtrain, Ytest, Xtest, G, sample, horizon){
             liveData[[var]] = list(data[[var]][[1]][(t-varOrder-horizon):(t-horizon)], data[[var]][[2]])
         }
         liveResponse = response[(t-order-horizon):(t-horizon)]
-        partialForecast = SARXforecast(liveResponse, liveData, G[(t-maxOrder-horizon):nG,], sample, horizon)
+        partialForecast = SARXforecast(liveResponse, liveData, G[(t-maxOrder-horizon):(t-maxOrder),], sample, horizon)
         
         ## save the forecast
         if ((t - maxOrder - horizon - 1) <= l_test) {
@@ -249,14 +248,15 @@ SARXLiveForecast <- function(Ytrain, Xtrain, Ytest, Xtest, G, sample, horizon){
     invisible(forecast)
 }
 
-SARXforecastRange <- function(Ytrain, Xtrain, Ytest, Xtest, G, sample, range){
+SARXforecastRange <- function(Ytrain, Xtrain, Ytest, Xtest, Gtrain, Gtest, sample, range){
     if (length(range) != 2) {
         return()
     }
     
     movie = new.env(hash = TRUE)
     for (i in seq(range[1], range[2])) {
-        movie[[sprintf("%d", i)]] = SARXLiveForecast(Ytrain, Xtrain, Ytest, Xtest, G, sample, i)
+        print(i)
+        movie[[sprintf("%d", i)]] = SARXLiveForecast(Ytrain, Xtrain, Ytest, Xtest, Gtrain,Gtest, sample, i)
     }
     
     invisible(movie)

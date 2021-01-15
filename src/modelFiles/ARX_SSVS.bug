@@ -1,0 +1,38 @@
+## N: number of observations
+## K: number of covariates
+## Y: response vector
+## X: covariate matrix
+
+## tau: variance of spike component
+## c: how much we amplify the spike component variance to obtain the slab component variance
+
+model{
+        c1 <- 1 / (pow(tau, 2))  ## spike component precision
+        c2 <- c1 / (pow(c, 2))   ## slab  component precision
+
+        for (j in 1:K) {
+            theta[j] ~ dunif(0, 1)
+            g[j] ~ dbern(theta[j])
+            mu_prior[j] <- 0
+            sigma_prior[j] <- equals(g[j], 0) * c1 + equals(g[j], 1) * c2
+
+            beta[j] ~ dnorm(mu_prior[j], sigma_prior[j])
+        }
+
+        ## likelihood
+        sigma ~ dgamma(2, 2) ## parameteri a caso
+        invSigma <- 1 / sigma
+
+        for (i in 1:N) {
+            mu[i] <- inprod(X[i, ], beta)
+
+            Y[i] ~ dnorm(mu[i], invSigma)
+        }
+
+
+        # tracing the visited model (copiato da corradin)
+        for (j in 1:K){
+            TempIndicator[j] <- g[j] * pow(2, j) 
+        }
+        mdl <- 1 + sum(TempIndicator[]) # model index in binary coding
+}

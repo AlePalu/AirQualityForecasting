@@ -3,4 +3,5 @@ __pycache__/
 data/rawdata.csv
 *~
 .Rhistory
-cestino/
+.Rout
+tmp/
