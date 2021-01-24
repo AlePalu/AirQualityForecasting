@@ -10,8 +10,7 @@ options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 ```
 
-
-
+Loading Data
 
 ```{r}
 data = fread("../data/tsData.csv")
@@ -19,33 +18,40 @@ data = fread("../data/tsData.csv")
 head(data)
 ```
 
+
+
 ```{r}
+#converting Date strings to a Date format
 data$created_at = ymd_hms(data$created_at)
-
-
 ```
 
 
 ```{r}
-new = data[(pot_id == 1024 & created_at > "2020-08-10" & created_at < "2020-08-12"),]
+#selecting the pot and the data
+new = data[(pot_id == 1024 & created_at > "2020-09-01" & created_at < "2020-10-27"),]
 
+#converting into a zoo (time series) object
 newTS = zoo(x = new$pm2p5SPS, order.by = new$created_at)
 
+# linearly approximating the NA values
 newTSapprox=na.approx(newTS)
 
+#plotting the time series
 plot(newTSapprox)
-
 ```
 
 
+
+
 ```{r}
+#preparing the data for the stan model
 
 y = coredata(newTSapprox)
 
 N = length(y)
 
-## seasonality 
-p = 5 
+## seasonality parameter
+p = 24 
 
 data = list(
   y = y,
@@ -53,55 +59,101 @@ data = list(
   p = p
 )
 
-fit = stan(file = "linearmodel.stan", data = data, control = list(adapt_delta = 0.99, max_treedepth = 20),iter = 4000)
+fit = stan(file = "expsmoothing.stan", data = data, control = list(adapt_delta = 0.99, max_treedepth = 20),iter = 4000)
 
 ```
 
 ```{r}
+# plotting the distributions of the main parameters
 pairs(fit, pars= c('alpha','beta','gamma','sigma'))
 ```
 
+```{r}
+final_summary = fit_summary$summary
+
+```
 
 
 ```{r}
+#extracting the posterior means of the main parameters
+alpha = final_summary[1,1]
+beta = final_summary[2,1]
+gamma = final_summary[3,1]
+b0 = final_summary[5,1]
+a0 = final_summary[6,1]
+c0 = final_summary[7:(6+p),1]
 
-fit_summary = summary(fit)
 
-alpha = fit_summary$summary['alpha','mean']
-beta = fit_summary$summary['beta','mean']
-gamma = fit_summary$summary['gamma','mean']
-a0 = fit_summary$summary['a0','mean']
-b0 = fit_summary$summary['b0','mean']
-
+# computing the fitted time series
+y_fit = y
 a = y
 b = y
 c = y
-c0=
-y_fit = y
 
-a[1]=a0
-b[1]=b0
 
-for(t in 2:N) {
-  a[t] = alpha*y[t-1] + (1 - alpha)*(a[t-1] + b[t-1]);
-  b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+y_fit[1] = a0 + b0 + c0[1];
+a[1] = alpha*(y[1]-c0[1]) + (1- alpha)*(a0 + b0);
+b[1] = beta*(a[1] - a0) + (1-beta)*b0;
+c[1] = gamma*(y[1] - a0 - b0) + (1-gamma)*c0[1];
+
+
+for(t in 2:p) {
+	y_fit[t] = a[t-1]+ b[t-1] + c0[t];
+	a[t] = alpha*(y[t]-c0[t]) + (1 - alpha)*(a[t-1] + b[t-1]);
+	b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+	c[t] = gamma*(y[t] - a[t-1] - b[t-1]) + (1-gamma)*c0[t];
 }
 
-y_fit = a + b
+for(t in (p+1):N) {
+  y_fit[t] = a[t-1] + b[t-1] + c[t-p];
+	a[t] = alpha*(y[t]-c[t-p]) + (1 - alpha)*(a[t-1] + b[t-1]);
+	b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+	c[t] = gamma*(y[t] - a[t-1] - b[t-1]) + (1-gamma)*c[t-p];
+}
 
-y_fit = zoo(x = y_fit, order.by = new$created_at)
+# making the predictions for the next 48 hours
 
-plot(y_fit)
+for(t in (N+1):(N+48)) {
+  y_fit[t] = a[t-1] + b[t-1] + c[t-p];
+	a[t] = alpha*(y_fit[t]-c[t-p]) + (1 - alpha)*(a[t-1] + b[t-1]);
+	b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+	c[t] = gamma*(y_fit[t] - a[t-1] - b[t-1]) + (1-gamma)*c[t-p];
+}
 
+
+#plotting the fitted time series
+
+plot(y_fit,type = 'l')
 ```
+
 
 ```{r}
 
-pairs(fit, pars = c('alpha','beta','sigma'))
+
+for(t in 2:p) {
+	y_net[t] = a[t-1]+ b[t-1] + c0[t];
+	a[t] = alpha*(y[t]-c0[t]) + (1 - alpha)*(a[t-1] + b[t-1]);
+	b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+	c[t] = gamma*(y[t] - a[t-1] - b[t-1]) + (1-gamma)*c0[t];
+}
+
+for(t in (p+1):N) {
+  y_net[t] = a[t-1] + b[t-1] + c[t-p];
+	a[t] = alpha*(y[t]-c[t-p]) + (1 - alpha)*(a[t-1] + b[t-1]);
+	b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+	c[t] = gamma*(y[t] - a[t-1] - b[t-1]) + (1-gamma)*c[t-p];
+}
+
+for(t in (N+1):(N+48)) {
+  y_net[t] = a[t-1] + b[t-1] + c[t-p];
+	a[t] = alpha*(y_net[t]-c[t-p]) + (1 - alpha)*(a[t-1] + b[t-1]);
+	b[t] = beta*(a[t] - a[t-1]) + (1-beta)*b[t-1];
+	c[t] = gamma*(y_net[t] - a[t-1] - b[t-1]) + (1-gamma)*c[t-p];
+}
+
+
+plot(y_net,type = 'l')
 
 
 ```
-
-
-
 
