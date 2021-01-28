@@ -6,7 +6,23 @@
 
 ## Installation
 
-...
+Check to have miniconda properly installed on your system. Then set up a conda environment: from your terminal run the following command
+```
+conda create --name AirQualityForecasting python=3.8
+```
+this will create a conda environment to keep the workspace in isolation from your system binaries. 
+To install tensorflow and tensorflow-probability run
+```
+conda activate AirQualityForecasting
+pip install --upgrade tensorflow
+pip install --upgrade tensorflow-probability
+```
+To see if R can properly interface with the python version installed in the environment, run the following in an R terminal and check if the python executable points to the installed version in the conda environment
+```
+library(reticulate)                    ## python interface for R
+use_condaenv("AirQualityForecasting")  ## activate environment
+py_config()                            ## check python
+```
 
 ## Project structure
 
@@ -22,7 +38,7 @@ In the **docs** folder you can find a set of files summarizing all our analysis 
 
 ### Data collection and exploration
 
-* [DataCollection](https://github.com/AlePalu/AirQualityForecasting/blob/master/notebooks/1-DataCollection.ipynb): We interface to Wiseair servers to collect data for the interested period. Remove useless features for statistical analysis and make an hourly aggregation to have data sampled with an uniform frequency. Finally integration of weather conditions using ARPA data is done. At the end the dataset in CSV format is produced (Written in python so to be able to interface with data servers).
+* [DataCollection](https://github.com/AlePalu/AirQualityForecasting/blob/master/docs/1-DataCollection.ipynb): We interface to Wiseair servers to collect data for the interested period. Remove useless features for statistical analysis and make an hourly aggregation to have data sampled with an uniform frequency. Finally integration of weather conditions using ARPA data is done. At the end the dataset in CSV format is produced (Written in python so to be able to interface with data servers).
 
 * DataExploration: ...
 
