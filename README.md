@@ -42,7 +42,7 @@ You can see and run the source code in the **src** directory for AR, ARX and SAR
 
 ### Dynamic Linear Models
 
-* [Dynamic Linear Models](): We set up a dynamic linear model to forecast the series of particulate matter. We use STS model of tensorflow probability to build and train the model.
+* [Dynamic Linear Model](): We set up a dynamic linear model to forecast the series of particulate matter. We use STS model of tensorflow probability to build and train the model.
 
 ## Final proposed model and conclusions
 
@@ -58,8 +58,12 @@ The final model is a dynamic linear model obtained as a superposition of simple 
   * rainfall intensity
   * global solar radiation
 
+The model is formally described by the following system
+
 ![model](./model.png)
 
+The one step predictive distribution is reported in the following picture
 
+![onesteppredictive](./onesteppredictive.png)
 
-# Licence
+The model is not able to correctly forecast the presence of peaks while is quite good in adapting for a decrease of the levels of PM. Indeed weather conditions are often related to a decrease of the level of pollutants instead of an increase. Adding more information to forecast an increase of the level of pollutants may increase the forecast capabilities of the model.
