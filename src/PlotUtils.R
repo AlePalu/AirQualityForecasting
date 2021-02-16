@@ -38,7 +38,7 @@ plotPosteriorDensity <- function(sample, vars, cI = FALSE, alpha = 0.025){
 ## forecast is the result of a forecast function
 ## title is just the title to show in the plot
 plotForecast <- function(testData, trainData, forecast, order, title, regressors = NULL,
-                         png = FALSE, fileTitle = NULL, limits = c(-50, 160)){
+                         png = FALSE, fileName = NULL, limits = c(-50, 160)){
 
     forecastDF = data.frame(yF   = colMeans(forecast),
                             xF   = (1:(dim(forecast)[2]))+ 24,
@@ -96,11 +96,11 @@ plotForecast <- function(testData, trainData, forecast, order, title, regressors
         x11()
         grid.arrange(grobs = plots, nrow = (1 + length(regressors)), ncol = 1)
     } else {
-        if (is.null(fileTitle)) {
+        if (is.null(fileName)) {
             return()
         } else {
             ## save plot on a file
-            file = sprintf("frames/%s.png", fileTitle)
+            file = sprintf("frames/%s.png", fileName)
             png(file, width = 1200, height = 800)
             picture = grid.arrange(grobs = plots, nrow = (1 + length(regressors)), ncol = 1)
             print(picture)
