@@ -42,7 +42,7 @@ You can see and run the source code in the **src** directory for AR, ARX and SAR
 
 ### Dynamic Linear Models
 
-* [Dynamic Linear Model](): We set up a dynamic linear model to forecast the series of particulate matter. We use STS model of tensorflow probability to build and train the model.
+* [Dynamic Linear Model](https://github.com/AlePalu/AirQualityForecasting/blob/master/docs/3-DynamicLinearModel.ipynb): We set up a dynamic linear model to forecast the series of particulate matter. We use STS model of tensorflow probability to build and train the model.
 
 ## Final proposed model and conclusions
 
